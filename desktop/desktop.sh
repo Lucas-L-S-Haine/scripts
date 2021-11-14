@@ -9,7 +9,7 @@ while getopts ":np" option;
         xdotool set_desktop $((CURR_DESK + 1))
       ;;
       p)
-        if [ $CURR_DESK -gt 0 ]; then
+        if [ "$CURR_DESK" -gt 0 ]; then
           xdotool set_desktop $((CURR_DESK - 1))
         fi
       ;;
