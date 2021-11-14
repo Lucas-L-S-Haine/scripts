@@ -6,11 +6,11 @@ while getopts ":np" option;
   do
     case $option in
       n)
-        wmctrl -s $(expr $CURR_DESK + 1)
+        xdotool set_desktop $(( $CURR_DESK + 1))
       ;;
       p)
         if [ $CURR_DESK -gt 0 ]; then
-          wmctrl -s $(expr $CURR_DESK - 1)
+          xdotool set_desktop $(( $CURR_DESK - 1))
         fi
       ;;
       *)
