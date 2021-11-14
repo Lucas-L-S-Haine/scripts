@@ -5,11 +5,13 @@ They require `xdotool` and `wmctrl` in order to work.
 If you don't have these packages, you can install them using
 your distro’s package manager.
 
-## Debian:
+## Installation:
+
+### Debian
 ```
 sudo apt-get install wmctrl xdotool
 ```
-## Arch Linux:
+### Arch Linux
 ```
 sudo pacman -S wmctrl xdotool
 ```
