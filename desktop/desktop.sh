@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-CURR_DESK=$(wmctrl -d | grep '*' | cut -d '*' -f 1)
+CURR_DESK=$(xdotool get_desktop)
 
 while getopts ":np" option;
   do
