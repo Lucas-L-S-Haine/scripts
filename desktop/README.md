@@ -26,7 +26,7 @@ sudo pacman -S wmctrl xdotool
 ./window.sh -m # restore window
 ./window.sh -f # toggle fullscreen
 ```
-In order to use these scripts, you'll probably wanto to set
+In order to use these scripts, you'll probably want to set
 them to specific keybindings. Also, you should use the full
 path to the files, or move/copy/symlink them to any folder in
 your `PATH`.
