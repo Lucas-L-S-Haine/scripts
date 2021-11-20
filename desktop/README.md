@@ -25,6 +25,7 @@ sudo pacman -S wmctrl xdotool
 ./window.sh -M # maximize window
 ./window.sh -m # restore window
 ./window.sh -f # toggle fullscreen
+./window.sh -s n # send active window to desktop number "n"
 ```
 In order to use these scripts, you'll probably want to set
 them to specific keybindings. Also, you should use the full
