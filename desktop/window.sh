@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-while getopts ":lrMmf" option;
+while getopts ":lrMmfs:" option;
   do
     case $option in
       l)
@@ -25,6 +25,12 @@ while getopts ":lrMmf" option;
       ;;
       f)
         wmctrl -r :ACTIVE: -b toggle,fullscreen
+      ;;
+      s)
+        wmctrl -r :ACTIVE: -t "$OPTARG"
+      ;;
+      :)
+        xdotool set_desktop --relative 0
       ;;
       *)
         exit 1
