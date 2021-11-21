@@ -27,7 +27,8 @@ while getopts ":lrMmfs:" option;
         wmctrl -r :ACTIVE: -b toggle,fullscreen
       ;;
       s)
-        wmctrl -r :ACTIVE: -t "$OPTARG"
+        # wmctrl -r :ACTIVE: -t "$OPTARG"
+        xdotool getactivewindow set_desktop_for_window "$OPTARG"
       ;;
       :)
         xdotool set_desktop --relative 0
