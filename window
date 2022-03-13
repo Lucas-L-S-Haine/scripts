@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-while getopts ":lrMmfs:" option;
+while getopts ":lrMmfs:c" option;
   do
     case $option in
       l)
@@ -29,6 +29,10 @@ while getopts ":lrMmfs:" option;
       s)
         # wmctrl -r :ACTIVE: -t "$OPTARG"
         xdotool getactivewindow set_desktop_for_window "$OPTARG"
+      ;;
+      c)
+        # xdotool windowclose "$(xdotool getactivewindow)"
+        wmctrl -c :ACTIVE:
       ;;
       :)
         xdotool set_desktop --relative 0
