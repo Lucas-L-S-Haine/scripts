@@ -1,1 +1,2 @@
-These are some of the scripts I wrote to make my life easier.
+These are some of my scripts.
+If you find them useful, feel free to use them.
