@@ -1,0 +1,13 @@
+{
+  "name": "scripts",
+  "version": "rolling",
+  "description": "",
+  "main": "listContainers.js",
+  "keywords": [],
+  "author": "Lucas L. S. Haine",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.2.6",
+    "shelljs": "^0.8.5"
+  }
+}
