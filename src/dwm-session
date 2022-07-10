@@ -1,7 +1,9 @@
 # Statusbar loop
 while true; do
-   xsetroot -name "$( date +'%A %d/%m/%Y %R' )"
-   sleep 1m    # Update time every minute
+	clock="$( date +'%A %d/%m/%Y %R' )"
+	battery="$(acpi -b)"
+	xsetroot -name "${battery} | ${clock}"
+	sleep 1m    # Update time every minute
 done &
 
 exec dwm
