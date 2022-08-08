@@ -1,7 +1,8 @@
 const fs = require('fs');
+const { spawn } = require('child_process');
 const { desc, task } = require('jake');
 
-task('default', runList);
+task('default', runDefault);
 
 desc('list js files and symlinks');
 task('list', runList);
@@ -14,6 +15,10 @@ task('clean', runClean);
 
 desc('alias for "clean"');
 task('unlink', runClean);
+
+async function runDefault() {
+  await spawn('jake', ['-t'], { stdio: 'inherit' });
+}
 
 function runList() {
   const results = returnLinkNames();
