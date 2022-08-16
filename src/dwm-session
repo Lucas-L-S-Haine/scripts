@@ -1,8 +1,7 @@
 while true; do
-	clock="$( date +'%A %d/%m/%Y %R' )"
-	battery="$(acpi -b)"
-	xsetroot -name "${battery} | ${clock}"
-	sleep 1m
+	status="$(dwm-status-bar)"
+	xsetroot -name "${status}"
+	sleep 5
 done &
 
 exec dwm
