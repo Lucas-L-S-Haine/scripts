@@ -1,0 +1,8 @@
+{
+  "name": "scripts",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.2.6",
+    "shelljs": "^0.8.5"
+  }
+}
