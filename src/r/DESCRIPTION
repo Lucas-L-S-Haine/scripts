@@ -1,3 +1,4 @@
 Package: app
 Imports:
+    littler,
     rmarkdown
