@@ -32,7 +32,7 @@ for row in containers
 
 writer = new Console { stdout, stderr }
 await run "touch #{output_file}"
-writer.table(table)
+writer.table table
 
 table_string = await fs.readFile output_file, encoding: "UTF-8"
 table_string = table_string
