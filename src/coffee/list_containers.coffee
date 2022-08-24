@@ -34,7 +34,8 @@ try
     await run "touch #{output_file}"
     writer.table table
 
-    table_string = await fs.readFile output_file, encoding: "UTF-8"
+    file = await fs.open output_file, "r"
+    table_string = await file.readFile encoding: "UTF-8"
     table_string = table_string
         .replace /'/g, " "
         .replace "  (index)   ", "CONTAINER ID"
@@ -44,6 +45,7 @@ catch error
     console.error error
 
 finally
+    if file? then await file.close()
     await fs.unlink output_file
 
     if table_string? then console.log table_string
