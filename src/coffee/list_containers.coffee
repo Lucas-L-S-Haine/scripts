@@ -13,7 +13,7 @@ output_file = "./table#{Date.now()}.txt"
 stdout = createWriteStream output_file
 stderr = process.stderr
 
-{ stdout: docker_output } = await run "docker ps --format table'{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Command}}\t{{.Status}}'"
+{ stdout: docker_output } = await run "docker ps --format table'{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'"
 
 [labels, entries...] = docker_output
     .split "\n"
