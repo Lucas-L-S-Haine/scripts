@@ -38,6 +38,7 @@ table_string = await fs.readFile output_file, encoding: "UTF-8"
 table_string = table_string
     .replace /'/g, " "
     .replace "  (index)   ", "CONTAINER ID"
+table_string = table_string.slice 0, -1
 await fs.unlink output_file
 
 console.log table_string
