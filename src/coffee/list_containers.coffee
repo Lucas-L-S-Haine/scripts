@@ -6,39 +6,44 @@ fs = require "fs/promises"
 { exec } = require "child_process"
 { promisify } = require "util"
 
-run = promisify exec
+try
+    run = promisify exec
 
-output_file = "./table#{Date.now()}.txt"
+    output_file = "./table#{Date.now()}.txt"
 
-stdout = createWriteStream output_file
-stderr = process.stderr
+    stdout = createWriteStream output_file
+    stderr = process.stderr
 
-{ stdout: docker_output } = await run "docker ps --format table'{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'"
+    { stdout: docker_output } = await run "docker ps --format table'{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'"
 
-[labels, entries...] = docker_output
-    .split "\n"
-    .slice 0, -1
+    docker_output = docker_output
+        .split "\n"
+        .slice 0, -1
 
-labels = labels.split /\s{2,}/
-containers = [(entry.split /\s{2,}/ for entry in entries)...]
+    [labels, containers...] = [(row.split /\s{2,}/ for row in docker_output)...]
 
-table = {}
-for row in containers
-    id = row[0]
-    table[id] = {}
-    container = row.slice 1
-    for value, col in container
-        table[id][labels[col + 1]] = value
+    table = {}
+    for row in containers
+        id = row[0]
+        table[id] = {}
+        container = row.slice 1
+        for value, col in container
+            table[id][labels[col + 1]] = value
 
-writer = new Console { stdout, stderr }
-await run "touch #{output_file}"
-writer.table table
+    writer = new Console { stdout, stderr }
+    await run "touch #{output_file}"
+    writer.table table
 
-table_string = await fs.readFile output_file, encoding: "UTF-8"
-table_string = table_string
-    .replace /'/g, " "
-    .replace "  (index)   ", "CONTAINER ID"
-table_string = table_string.slice 0, -1
-await fs.unlink output_file
+    table_string = await fs.readFile output_file, encoding: "UTF-8"
+    table_string = table_string
+        .replace /'/g, " "
+        .replace "  (index)   ", "CONTAINER ID"
+    table_string = table_string.slice 0, -1
 
-console.log table_string
+catch error
+    console.error error
+
+finally
+    await fs.unlink output_file
+
+    if table_string? then console.log table_string
