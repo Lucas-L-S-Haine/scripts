@@ -40,4 +40,4 @@ table_string = table_string
     .replace "  (index)   ", "CONTAINER ID"
 await fs.unlink output_file
 
-console.log(table_string)
+console.log table_string
