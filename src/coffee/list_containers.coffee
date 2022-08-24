@@ -31,7 +31,6 @@ try
             table[id][labels[col + 1]] = value
 
     writer = new Console { stdout, stderr }
-    await run "touch #{output_file}"
     writer.table table
 
     file = await fs.open output_file, "r"
