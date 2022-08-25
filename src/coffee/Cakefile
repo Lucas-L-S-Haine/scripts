@@ -1,0 +1,38 @@
+fs = require "fs"
+coffee = require "coffeescript"
+
+compile = (coffeefile, jsfile) ->
+    if fs.existsSync jsfile
+        fs.unlinkSync jsfile
+
+    input_file = fs.openSync coffeefile, "r"
+    output_file = fs.openSync jsfile, "w"
+    content = fs.readFileSync input_file, encoding: "UTF-8"
+
+    result = coffee.compile content
+        .split "\n"
+        .filter (line) -> !/usr\/bin\/env coffee/.test line
+    result.unshift "#!/usr/bin/env node"
+    result = result.join "\n"
+
+    fs.writeFileSync output_file, result, enconding: "UTF-8"
+    fs.chmodSync jsfile, 0o755
+    fs.closeSync input_file
+    fs.closeSync output_file
+
+
+option "-o", "--output [PATH]", "directory of file path for compiled code"
+option "-c", "--compile [PATH]", "directory or file to compile"
+
+
+task "list", "lists all files with .coffee extension",
+    ->
+        files = fs
+            .readdirSync ".", encoding: "UTF-8"
+            .filter (filename) -> /\.coffee$/.test filename
+        console.log files
+
+
+task "compile", "compiles list_containers.coffee and send output file to bin directory",
+    (options) ->
+        compile "list_containers.coffee", "../../bin/list-containers"
