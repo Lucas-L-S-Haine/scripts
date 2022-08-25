@@ -2,7 +2,6 @@
 { Console } = require "node:console"
 fs = require "fs/promises"
 { createWriteStream } = require "fs"
-{ _: argv, ...options } = require("minimist")(process.argv.slice 2)
 { exec } = require "child_process"
 { promisify } = require "util"
 
