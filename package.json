@@ -2,6 +2,7 @@
   "name": "scripts",
   "license": "MIT",
   "dependencies": {
+    "coffeescript": "^2.7.0",
     "minimist": "^1.2.6",
     "shelljs": "^0.8.5"
   }
