@@ -19,6 +19,7 @@ compile = (coffeefile, jsfile) ->
     fs.chmodSync jsfile, 0o755
     fs.closeSync input_file
     fs.closeSync output_file
+    console.log "#{coffeefile} -> #{jsfile}"
 
 
 option "-o", "--output [PATH]", "directory of file path for compiled code"
@@ -33,6 +34,36 @@ task "list", "lists all files with .coffee extension",
         console.log files
 
 
-task "compile", "compiles list_containers.coffee and send output file to bin directory",
+task "compile", "compiles all .coffee files and send to bin directory",
     (options) ->
-        compile "list_containers.coffee", "../../bin/list-containers"
+        input_path = options.compile or "./"
+        output_path = options.output or "../../bin/"
+        input_is_dir = fs.statSync(input_path).isDirectory()
+        output_is_dir = fs.statSync(output_path).isDirectory()
+
+        if input_is_dir and not output_is_dir
+            throw new Error "cannot compile source directory into a file"
+
+        else if input_is_dir and output_is_dir
+            input_files = fs.readdirSync input_path
+                .filter (file) -> /.coffee$/.test file
+            output_files = [(file.replace("_", "-").slice(0, -7) for file in input_files)...]
+            for file, index in output_files
+                input_file = input_files[index]
+                output_file = [output_path, file]
+                    .join "/"
+                    .replace "//", "/"
+                compile input_file, output_file
+
+        else
+            input_file = input_path
+            output_file = input_file
+                .replace "_", "-"
+                .slice 0, -7
+            output_file = [output_path, output_file]
+                .join "/"
+                .replace "//", "/" if output_is_dir
+
+            compile input_file, output_file
+
+        console.log "\x1b[32mCompiled successfully!\x1b[00m"
