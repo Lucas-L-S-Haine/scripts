@@ -22,8 +22,8 @@ compile = (coffeefile, jsfile) ->
     console.log "#{coffeefile} -> #{jsfile}"
 
 
-option "-o", "--output [PATH]", "directory of file path for compiled code"
 option "-c", "--compile [PATH]", "directory or file to compile"
+option "-o", "--output [PATH]", "directory of file path for compiled code"
 
 
 task "list", "lists all files with .coffee extension",
