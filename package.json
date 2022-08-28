@@ -2,7 +2,9 @@
   "name": "scripts",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^18.7.13",
     "coffeescript": "^2.7.0",
+    "jake": "^10.8.5",
     "minimist": "^1.2.6",
     "shelljs": "^0.8.5"
   }
