@@ -1,5 +1,5 @@
-FILES = $$(ls *.sh)
-BIN_DIR = $$(cd ../../bin && pwd)
+FILES = $(shell ls *.sh)
+BIN_DIR = $(shell cd ../../bin && pwd)
 
 link:
 	for FILE in $(FILES); do \
