@@ -4,6 +4,9 @@ fs = require "fs/promises"
 { createWriteStream } = require "fs"
 { exec } = require "child_process"
 { promisify } = require "util"
+minimist = require "minimist"
+
+{ _: args, options... } = minimist process.argv.slice 2
 
 try
     run = promisify exec
@@ -13,7 +16,15 @@ try
     stdout = createWriteStream output_file
     stderr = process.stderr
 
-    { stdout: docker_output } = await run "docker ps --format table'{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'"
+    docker_args = ["ps"]
+    docker_args.push "-a" if options["a"] or options["all"]
+    docker_args.push ["--format",
+        "'table{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'"]...
+    docker_command = ["docker"]
+        .concat docker_args
+        .join " "
+
+    { stdout: docker_output } = await run docker_command
 
     docker_output = docker_output
         .split "\n"
