@@ -43,7 +43,13 @@ task "compile", "compiles all .coffee files and send to bin directory",
             output_is_dir = fs.statSync(output_path).isDirectory()
         catch
             output_is_dir = input_is_dir
+            base_dir = output_path
+                .split "/"
+                .slice 0, -1
+                .join "/"
             fs.mkdirSync output_path, recursive: yes if output_is_dir
+            fs.mkdirSync base_dir,
+            recursive: yes unless output_is_dir or base_dir is ""
 
         if input_is_dir and not output_is_dir
             throw new Error "cannot compile source directory into a file"
