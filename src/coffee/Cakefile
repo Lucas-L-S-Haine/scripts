@@ -57,7 +57,8 @@ task "compile", "compiles all .coffee files and send to bin directory",
         else if input_is_dir and output_is_dir
             input_files = fs.readdirSync input_path
                 .filter (file) -> /.coffee$/.test file
-            output_files = [(file.replace("_", "-").slice(0, -7) for file in input_files)...]
+            output_files = [(file.replace("_", "-")
+                            .slice(0, -7) for file in input_files)...]
             for file, index in output_files
                 input_file = input_files[index]
                 output_file = [output_path, file]
