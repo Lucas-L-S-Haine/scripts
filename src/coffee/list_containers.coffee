@@ -46,9 +46,41 @@ try
     file = await fs.open output_file, "r"
     table_string = await file.readFile encoding: "UTF-8"
     table_string = table_string
-        .replace /'/g, " "
+        .replace /'/g, ""
         .replace "  (index)   ", "CONTAINER ID"
         .slice 0, -1
+
+    output_table = table_string.split "\n"
+
+    lines = output_table[0]
+        .split "┬"
+        .map (value, index) ->
+            if index then value.slice(2) else value
+        .join "┬"
+    output_table[0] = lines
+
+    names = output_table[1]
+        .split "│"
+        .map (value, index) ->
+            if index > 1 then value.slice(1, -1) else value
+        .join "│"
+    output_table[1] = names
+
+    lines = output_table[2]
+        .split "┼"
+        .map (value, index) ->
+            if index then value.slice(2) else value
+        .join "┼"
+    output_table[2] = lines
+
+    n = output_table.indexOf output_table.at -1
+    lines = output_table[n]
+        .split "┴"
+        .map (value, index) ->
+            if index then value.slice(2) else value
+        .join "┴"
+    output_table[n] = lines
+    table_string = output_table.join "\n"
 
 catch error
     console.error error
