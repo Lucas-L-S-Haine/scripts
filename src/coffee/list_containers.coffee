@@ -82,6 +82,11 @@ try
     output_table[n] = lines
     table_string = output_table.join "\n"
 
+    table_width = table_string.split("\n")[0].length
+    window_width = process.stdout.columns
+    if table_width > window_width
+        throw new Error "table too large to fit on output window"
+
 catch error
     console.error error
 
