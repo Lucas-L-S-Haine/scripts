@@ -17,8 +17,8 @@ try:
     file_exists = True
 
     reader = csv.DictReader(game_list_file)
-    result = [row for row in reader]
-    print(result)
+    games = [row for row in reader]
+    print(games)
 except:
     print(ERROR_MESSAGE, file=sys.stderr)
 finally:
