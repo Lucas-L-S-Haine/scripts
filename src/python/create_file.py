@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+import os
+import sys
+import csv
+
+
+HOME = os.environ["HOME"]
+STEAM_GAMES_CSV = f"{HOME}/Documents/steam_games.csv"
+ERROR_MESSAGE = f"""File {STEAM_GAMES_CSV} not found.
+Please ensure the file is on the correct location and has the correct data.
+"""
+
+
+try:
+    file_exists = False
+    game_list_file = open(STEAM_GAMES_CSV, mode="r", encoding="utf-8")
+    file_exists = True
+
+    reader = csv.DictReader(game_list_file)
+    result = [row for row in reader]
+    print(result)
+except:
+    print(ERROR_MESSAGE, file=sys.stderr)
+finally:
+    if file_exists:
+        game_list_file.close()
