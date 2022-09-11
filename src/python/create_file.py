@@ -24,3 +24,10 @@ except:
 finally:
     if file_exists:
         game_list_file.close()
+
+
+def newlines(text_list):
+    for index in range(len(text_list)):
+        text_list[index] += "\n"
+
+    return text_list
