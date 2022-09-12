@@ -41,3 +41,14 @@ def newlines(text_list):
         text_list[index] += "\n"
 
     return text_list
+
+
+for game in games:
+    gameid = game["gameid"]
+    name = game["name"]
+    file_name = f"{GAMES_DIR}/{name}"
+    command = ["#!/bin/sh", "", f"exec steam steam://rungameid/{gameid}"]
+
+    with open(file_name, mode="w", encoding="utf-8") as file:
+        file.writelines(newlines(command))
+        os.chmod(file.name, 0o755)
