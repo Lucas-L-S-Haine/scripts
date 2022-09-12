@@ -18,7 +18,6 @@ try:
 
     reader = csv.DictReader(game_list_file)
     games = [row for row in reader]
-    print(games)
 except:
     print(f"Error: {ERROR_MESSAGE}", file=sys.stderr)
 finally:
