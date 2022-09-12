@@ -1,0 +1,19 @@
+const fs = require('fs');
+const { desc, task } = require('jake');
+
+desc('look at the files');
+task('default', () => {
+  const files = fs.readdirSync('.')
+    .filter((filename) => /\.js$/.test(filename));
+
+  const link = (filename) => filename
+    .slice(0, -3)
+    .split('')
+    .map((letter) => (
+      letter === letter.toUpperCase() ? '-' + letter.toLowerCase() : letter
+    ))
+    .join('');
+
+  const links = files.map(link);
+  for (const index in files) console.log(`${files[index]} -> ${links[index]}`);
+});
