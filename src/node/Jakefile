@@ -4,10 +4,11 @@ const { desc, task } = require('jake');
 desc('look at the files');
 task('default', () => {
   const files = fs.readdirSync('.')
-    .filter((filename) => /\.js$/.test(filename));
+    .filter((filename) => /\.(js|cjs|mjs)$/.test(filename));
 
   const link = (filename) => filename
-    .slice(0, -3)
+    .split('.')
+    .at(0)
     .split('')
     .map((letter) => (
       letter === letter.toUpperCase() ? '-' + letter.toLowerCase() : letter
