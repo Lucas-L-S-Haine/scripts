@@ -6,7 +6,7 @@ import csv
 
 HOME = os.environ["HOME"]
 STEAM_GAMES_CSV = f"{HOME}/Documents/steam_games.csv"
-ERROR_MESSAGE = f"""File {STEAM_GAMES_CSV} not found.
+ERROR_MESSAGE = f"""file {STEAM_GAMES_CSV} not found.
 Please ensure the file is on the correct location and has the correct data.
 """
 
@@ -20,7 +20,7 @@ try:
     games = [row for row in reader]
     print(games)
 except:
-    print(ERROR_MESSAGE, file=sys.stderr)
+    print(f"Error: {ERROR_MESSAGE}", file=sys.stderr)
 finally:
     if file_exists:
         game_list_file.close()
