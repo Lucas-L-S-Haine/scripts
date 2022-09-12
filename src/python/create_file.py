@@ -5,10 +5,21 @@ import csv
 
 
 HOME = os.environ["HOME"]
+PATH = os.environ["PATH"]
 STEAM_GAMES_CSV = f"{HOME}/Documents/steam_games.csv"
 ERROR_MESSAGE = f"""file {STEAM_GAMES_CSV} not found.
 Please ensure the file is on the correct location and has the correct data.
 """
+GAMES_DIR = f"{HOME}/.games"
+TARGET_DIR_NOT_IN_PATH = f"target directory {GAMES_DIR} is not in $PATH"
+
+
+try:
+    path_list = PATH.split(":")
+    path_list.index(GAMES_DIR)
+except:
+    print(f"Error: {TARGET_DIR_NOT_IN_PATH}", file=sys.stderr)
+    sys.exit(2)
 
 
 try:
