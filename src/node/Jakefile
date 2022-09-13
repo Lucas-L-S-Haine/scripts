@@ -1,13 +1,41 @@
 const fs = require('fs');
 const { desc, task } = require('jake');
 
-desc('look at the files');
-task('default', runDefault);
+task('default', runList);
 
-function runDefault() {
+desc('list js files and symlinks');
+task('list', runList);
+
+desc('create symbolic links at target directory');
+task('link', ['list'], runLink);
+
+function runList() {
   const results = returnLinkNames();
 
   results.forEach(([jsFile, symlink]) => console.log(`${jsFile} -> ${symlink}`));
+}
+
+function runLink() {
+  const filePairs = returnLinkNames();
+  const targetDir = '../../bin';
+
+  for (let index = 0; index < filePairs.length; index += 1) {
+    let [jsFile, symlink] = filePairs[index];
+    let target = [__dirname, jsFile].join('/');
+    let path = [targetDir, symlink].join('/');
+    try {
+      fs.symlinkSync(target, path);
+    } catch(error) {
+      if (error.code === 'EEXIST') {
+        fs.unlinkSync(path);
+        fs.symlinkSync(target, path);
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  console.log("\x1b[32mLinks successfully created!\x1b[00m");
 }
 
 function createLinkName(jsFileName) {
