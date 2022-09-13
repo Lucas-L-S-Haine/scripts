@@ -9,6 +9,12 @@ task('list', runList);
 desc('create symbolic links at target directory');
 task('link', ['list'], runLink);
 
+desc('remove symbolic links');
+task('clean', runClean);
+
+desc('alias for "clean"');
+task('unlink', runClean);
+
 function runList() {
   const results = returnLinkNames();
 
@@ -36,6 +42,21 @@ function runLink() {
   }
 
   console.log("\x1b[32mLinks successfully created!\x1b[00m");
+}
+
+function runClean() {
+  const filePairs = returnLinkNames();
+  const targetDir = '../../bin';
+
+  for (let index = 0; index < filePairs.length; index += 1) {
+    let [_, symlink] = filePairs[index];
+    let path = [targetDir, symlink].join('/');
+    fs.unlink(path, handleClean);
+  }
+}
+
+function handleClean(err) {
+  if (err && err.code !== 'ENOENT') throw err;
 }
 
 function createLinkName(jsFileName) {
