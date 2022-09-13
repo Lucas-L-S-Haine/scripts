@@ -2,11 +2,16 @@ const fs = require('fs');
 const { desc, task } = require('jake');
 
 desc('look at the files');
-task('default', () => {
-  const files = fs.readdirSync('.')
-    .filter((filename) => /\.(js|cjs|mjs)$/.test(filename));
+task('default', runDefault);
 
-  const link = (filename) => filename
+function runDefault() {
+  const results = returnLinkNames();
+
+  results.forEach(([jsFile, symlink]) => console.log(`${jsFile} -> ${symlink}`));
+}
+
+function createLinkName(jsFileName) {
+  const linkName = jsFileName
     .split('.')
     .at(0)
     .split('')
@@ -15,6 +20,53 @@ task('default', () => {
     ))
     .join('');
 
-  const links = files.map(link);
-  for (const index in files) console.log(`${files[index]} -> ${links[index]}`);
-});
+  return linkName;
+}
+
+function returnLinkNames() {
+  const listedLinks = getListedLinks();
+  const jsFiles = getJsFiles();
+  const linkMatrix = listedLinks
+    .trim()
+    .split('\n')
+    .map((name) => name.split(':'));
+  const linkedJsFiles = [];
+  const resultingLinks = [];
+
+  linkMatrix.forEach(([file, symlink]) => {
+    linkedJsFiles.push(file);
+    resultingLinks.push(symlink);
+  });
+
+  const result = [];
+  for (let index = 0; index < jsFiles.length; index += 1) {
+    const fileName = jsFiles[index];
+    const fileIndex = linkedJsFiles.indexOf(fileName);
+    let linkName;
+
+    if (fileIndex !== -1) {
+      linkName = resultingLinks[fileIndex];
+    } else {
+      linkName = createLinkName(fileName);
+    }
+
+    result.push([fileName, linkName]);
+  }
+
+  return result;
+}
+
+function getJsFiles() {
+  return fs.readdirSync('.')
+    .filter((filename) => /\.(js|cjs|mjs)$/.test(filename));
+}
+
+function getListedLinks() {
+  let result;
+  try {
+    result = fs.readFileSync('links.txt', { encoding: 'utf-8' });
+  } catch {
+    result = '';
+  }
+  return result;
+}
