@@ -3,11 +3,19 @@ import requests
 import subprocess
 import json
 
-url = "http://worldtimeapi.org/api/timezone/America/Sao_Paulo"
-response = requests.get(url)
+try:
+    url = "http://worldclockapi.com/api/json/utc/now"
+    response = requests.get(url)
+except:
+    subprocess.run(["notify-send", "-t", "5000", "Error in update_clock.py"])
 
-datetime = json.loads(response.text)["datetime"]
-datetime = datetime.replace("T", " ").split(".")[0]
+data = json.loads(response.text)
 
-command = ["timedatectl", "set-time", datetime]
+date, time = data["currentDateTime"].replace("Z", "").split("T")
+hours, minutes = time.split(":")
+hours = str(int(hours) - 3)
+time = ":".join([hours, minutes])
+datetime = " ".join([date, time])
+
+command = ["doas", "timedatectl", "set-time", datetime]
 subprocess.run(command)
