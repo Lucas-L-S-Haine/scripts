@@ -1,21 +1,23 @@
 #!/usr/bin/env python
-import requests
-import subprocess
-import json
+import sys
+import time
+from subprocess import run
+from requests import request
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 try:
-    url = "http://worldclockapi.com/api/json/utc/now"
-    response = requests.get(url)
-except:
-    subprocess.run(["notify-send", "-t", "5000", "Error in update_clock.py"])
+    datetime = request("head", "http://www.google.com").headers["date"]
+except BaseException as Error:
+    run(["notify-send", "--expire-time=5000", "Error: failed to update clock"])
+    run(["notify-send", "--expire-time=5000", Error.__str__()])
+    sys.exit(1)
 
-data = json.loads(response.text)
+localtime = parse(datetime) + relativedelta(hours=-3)
+time_str = f"{localtime.date()} {localtime.time()}"
 
-date, time = data["currentDateTime"].replace("Z", "").split("T")
-hours, minutes = time.split(":")
-hours = str(int(hours) - 3)
-time = ":".join([hours, minutes])
-datetime = " ".join([date, time])
-
-command = ["doas", "timedatectl", "set-time", datetime]
-subprocess.run(command)
+run(["doas", "timedatectl", "set-ntp", "false"])
+time.sleep(1)
+run(["doas", "timedatectl", "set-time", time_str])
+time.sleep(1)
+run(["doas", "timedatectl", "set-ntp", "true"])
