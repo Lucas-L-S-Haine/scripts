@@ -13,7 +13,14 @@ public class ${className} {
 
 }\n`;
 
+function handleClasses(err) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+}
+
 classes
   .map((className) => [`${className}.java`, className])
-  .forEach(([file, className]) => fs.writeFileSync(file, code(packageName, className),
-    { encoding: 'utf-8', mode: 0o644, flag: 'w' }))
+  .forEach(([file, className]) => fs.writeFile(file, code(packageName, className),
+    { encoding: 'utf-8', mode: 0o644, flag: 'w' }, handleClasses))
