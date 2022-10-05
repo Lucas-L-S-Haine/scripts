@@ -3,7 +3,7 @@ const fs = require('fs');
 const { basename } = require('path');
 const { _: classes, ...options } = require('minimist')(process.argv.slice(2));
 
-const dirname = basename(__dirname);
+const dirname = basename(process.env.PWD);
 
 const packageName = options.package || options.p || dirname;
 const code = (packageName, className) =>
