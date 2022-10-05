@@ -21,6 +21,6 @@ function handleClasses(err) {
 }
 
 classes
-  .map((className) => [`${className}.java`, className])
+  .map((className) => [`${className}.java`, basename(className)])
   .forEach(([file, className]) => fs.writeFile(file, code(packageName, className),
     { encoding: 'utf-8', mode: 0o644, flag: 'w' }, handleClasses))
