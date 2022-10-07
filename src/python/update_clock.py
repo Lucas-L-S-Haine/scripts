@@ -9,8 +9,8 @@ from dateutil.relativedelta import relativedelta
 try:
     datetime = request("head", "http://www.google.com").headers["date"]
 except BaseException as error:
-    run(["notify-send", "--expire-time=5000", "Error: failed to update clock"])
-    run(["notify-send", "--expire-time=5000", error.__str__()])
+    run(["notify-send", "--expire-time=10000", "Error: failed to update clock"])
+    run(["notify-send", "--expire-time=10000", error.__str__()])
     sys.exit(1)
 
 localtime = parse(datetime) + relativedelta(hours=-3)
