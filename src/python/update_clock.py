@@ -7,7 +7,7 @@ from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 
 try:
-    datetime = request("head", "http://www.google.com").headers["date"]
+    datetime = request("head", "https://www.google.com").headers["date"]
 
     localtime = parse(datetime) + relativedelta(hours=-3)
     time_str = f"{localtime.date()} {localtime.time()}"
