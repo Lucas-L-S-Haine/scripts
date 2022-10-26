@@ -18,6 +18,8 @@ try:
     time.sleep(1)
     run(["doas", "-n", "timedatectl", "set-ntp", "true"])
 except BaseException as error:
-    run(["notify-send", "--expire-time=10000", "Error: failed to update clock"])
-    run(["notify-send", "--expire-time=10000", error.__str__()])
+    summary = "Error: failed to update clock"
+    body = error.__str__()
+
+    run(["notify-send", "--expire-time=10000", summary, body])
     sys.exit(1)
