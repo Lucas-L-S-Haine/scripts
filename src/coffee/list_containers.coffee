@@ -30,7 +30,7 @@ try
         .split "\n"
         .slice 0, -1
 
-    [labels, containers...] = [(row.split /\s{2,}/ for row in docker_output)...]
+    [labels, containers...] = (row.split /\s{2,}/ for row in docker_output)
 
     table = {}
     for row in containers
