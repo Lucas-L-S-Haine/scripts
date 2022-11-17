@@ -1,5 +1,7 @@
 #!/usr/bin/env coffee
+os = require "node:os"
 { Console } = require "node:console"
+path = require "path"
 fs = require "fs/promises"
 { createWriteStream } = require "fs"
 { exec } = require "child_process"
@@ -11,7 +13,8 @@ minimist = require "minimist"
 try
     run = promisify exec
 
-    output_file = "./table#{Date.now()}.txt"
+    output_dir = await fs.mkdtemp [os.tmpdir(), null].join(path.sep)
+    output_file = path.join(output_dir, "table#{Date.now()}")
 
     stdout = createWriteStream output_file
     stderr = process.stderr
@@ -93,5 +96,6 @@ catch error
 finally
     if file? then await file.close()
     await fs.unlink output_file
+    await fs.rmdir output_dir
 
     if table_string? then console.log table_string
