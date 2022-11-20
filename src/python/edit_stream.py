@@ -10,9 +10,8 @@ try:
     tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
 
     if not sys.stdin.isatty():
-        file = open(tmp_file.name, mode="w")
-        file.write(sys.stdin.read())
-        file.close()
+        with open(tmp_file.name, mode="w") as file:
+            file.write(sys.stdin.read())
 
     file = open(tmp_file.name, mode="r")
 
