@@ -1,4 +1,4 @@
-FILES = $(shell ls *.sh)
+FILES = $(wildcard *.sh)
 BIN_DIR = $(shell cd ../../bin && pwd)
 
 link:
