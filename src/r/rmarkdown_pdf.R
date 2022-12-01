@@ -1,5 +1,4 @@
 #!/usr/bin/env r
-
 require("rmarkdown")
 
 render(
@@ -12,5 +11,5 @@ render(
   params = list(mainfont = "DejaVuSans"),
   envir = new.env(),
   run_pandoc = TRUE,
-  quiet = FALSE
+  quiet = TRUE,
 )
