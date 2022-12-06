@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 
 
 def main():
+    """Fetches time from Google and updates system clock"""
 
     try:
         datetime = request("head", "https://www.google.com").headers["date"]
