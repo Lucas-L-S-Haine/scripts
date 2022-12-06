@@ -5,28 +5,35 @@ import tempfile
 from subprocess import run
 
 
-try:
-    exit_status = 0
-    tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
+def main():
 
-    if not sys.stdin.isatty():
-        with open(tmp_file.name, mode="w") as file:
-            file.write(sys.stdin.read())
+    try:
+        exit_status = 0
+        tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
 
-    file = open(tmp_file.name, mode="r")
+        if not sys.stdin.isatty():
+            with open(tmp_file.name, mode="w") as file:
+                file.write(sys.stdin.read())
 
-    if not sys.stderr.isatty():
-        raise RuntimeError("Error: this script doesn't allow stderr redirection")
+        file = open(tmp_file.name, mode="r")
 
-    run(["nvim", file.name], stdout=sys.stderr)
+        error_message = "Error: this script doesn't allow stderr redirection"
+        if not sys.stderr.isatty():
+            raise RuntimeError(error_message)
 
-    sys.stdout.write(file.read())
+        run(["nvim", file.name], stdout=sys.stderr)
 
-except BaseException as error:
-    print(error)
-    exit_status = 1
+        sys.stdout.write(file.read())
 
-finally:
-    file.close()
-    os.remove(tmp_file.name)
-    sys.exit(exit_status)
+    except BaseException as error:
+        print(error)
+        exit_status = 1
+
+    finally:
+        file.close()
+        os.remove(tmp_file.name)
+        sys.exit(exit_status)
+
+
+if __name__ == "__main__":
+    main()
