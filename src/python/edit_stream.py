@@ -8,6 +8,8 @@ from subprocess import run
 def main():
     """Reads input from stdin, edits on neovim and pipes into stdout"""
 
+    ERROR_MESSAGE = "Error: this script doesn't allow stderr redirection"
+
     try:
         exit_status = 0
         tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
@@ -18,9 +20,8 @@ def main():
 
         file = open(tmp_file.name, mode="r")
 
-        error_message = "Error: this script doesn't allow stderr redirection"
         if not sys.stderr.isatty():
-            raise RuntimeError(error_message)
+            raise RuntimeError(ERROR_MESSAGE)
 
         run(["nvim", file.name], stdout=sys.stderr)
 
