@@ -6,6 +6,7 @@ from subprocess import run
 
 
 def main():
+    """Reads input from stdin, edits on neovim and pipes into stdout"""
 
     try:
         exit_status = 0
