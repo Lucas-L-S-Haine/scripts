@@ -5,6 +5,8 @@ import csv
 
 
 def main():
+    """Gets list of games from csv file and creates an executable script for
+    each one of them"""
 
     HOME = os.environ["HOME"]
     PATH = os.environ["PATH"]
