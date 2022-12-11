@@ -17,3 +17,6 @@ link:
 	exit 1; fi
 	Rscript -e '$(COMMAND)'
 	printf "\n\x1b[32msuccess:\x1b[0m symbolic link created at $$(which r)\n"
+
+lint:
+	Rscript -e 'lintr::lint_dir()' >&2
