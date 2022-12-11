@@ -1,4 +1,5 @@
 Package: app
 Imports:
+    lintr,
     littler,
     rmarkdown
