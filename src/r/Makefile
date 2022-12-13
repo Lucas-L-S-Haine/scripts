@@ -46,3 +46,5 @@ $(out_files):
 
 $(littler_link): $(littler_bin)
 	ln -sf $< $@
+
+.PHONY: all install link unlink lint r
