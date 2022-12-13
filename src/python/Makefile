@@ -23,10 +23,5 @@ $(bin_dir):
 		mkdir $(bin_dir); \
 	fi
 
-../../$(notdir $(bin_dir)): $(bin_dir)
-
-$(bin_dir)/%: %$(ext) | $(bin_dir)
-	ln -s $< $@
-
 $(out_files):
 	ln -s $(join $(CURDIR)/, $(call name_src, $(notdir $@))) $@
