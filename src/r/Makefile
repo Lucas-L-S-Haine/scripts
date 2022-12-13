@@ -1,5 +1,5 @@
 littler_bin := $(shell Rscript -e 'cat(system.file("bin", "r", package = "littler"))')
-littler_link := "${HOME}/.local/bin/r"
+littler_link := ${HOME}/.local/bin/r
 
 bin_dir := $(abspath $(CURDIR)/../../bin)
 ext := .R
@@ -45,6 +45,6 @@ $(out_files):
 	ln -s $(join $(CURDIR)/, $(call name_src, $(notdir $@))) $@
 
 $(littler_link): $(littler_bin)
-	ln -sf $< $@
+	ln -s $< $@
 
 .PHONY: all install link unlink lint r
