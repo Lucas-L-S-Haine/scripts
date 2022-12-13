@@ -25,3 +25,5 @@ $(bin_dir):
 
 $(out_files):
 	ln -s $(join $(CURDIR)/, $(call name_src, $(notdir $@))) $@
+
+.PHONY: link unlink
