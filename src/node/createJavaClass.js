@@ -11,6 +11,9 @@ const code = (packageName, className) =>
 
 public class ${className} {
 
+    public static void main(String[] args) {
+
+    }
 }\n`;
 
 function handleClasses(err) {
