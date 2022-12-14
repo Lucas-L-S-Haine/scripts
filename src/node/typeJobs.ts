@@ -46,8 +46,17 @@ class MyCollection {
       await this._client.close();
     }
   }
+
+  async findOne(query = {}, options = {}) {
+    try {
+      await this._client.connect();
+      return await this._collection.findOne(query, options);
+    } finally {
+      await this._client.close();
+    }
+  }
 }
 
-const apply = new MyCollection(client, 'job_hunt', 'apply');
+export const apply = new MyCollection(client, 'job_hunt', 'apply');
 apply.find({}, { projection: { name: true, area: true, responded: true, date: true, platform: true }})
   .then((list) => console.table(list.map(({ _id , ...attributes }: { _id: ObjectId }) => ({ _id: String(_id), ...attributes }))));
