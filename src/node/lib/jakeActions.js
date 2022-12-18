@@ -89,7 +89,7 @@ function returnLinkNames() {
       linkName = createLinkName(fileName);
     }
 
-    result.push([fileName, linkName]);
+    if (linkName !== '') result.push([fileName, linkName]);
   }
 
   return result;
