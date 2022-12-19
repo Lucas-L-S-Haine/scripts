@@ -2,3 +2,4 @@ node_modules/
 bin/
 .venv/
 __pycache__/
+links.txt
