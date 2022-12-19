@@ -1,5 +1,5 @@
 const { desc, task } = require('jake');
-const { runList, runLink, runClean } = require('./lib/jakeActions');
+const { runList, runLink, runClean } = require('./lib/jake_actions');
 
 desc('list js files and symlinks');
 task('list', runList);
