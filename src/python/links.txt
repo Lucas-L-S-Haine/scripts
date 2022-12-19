@@ -1,2 +1,0 @@
-edit_stream.py:edit
-link_steam_games.py:link-steam

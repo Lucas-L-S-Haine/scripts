@@ -1,2 +1,0 @@
-parseFlags.js:flags
-createJavaClass.js:java-class

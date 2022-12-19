@@ -1,2 +1,0 @@
-br_keys.sh:keys
-br_search.sh:search
