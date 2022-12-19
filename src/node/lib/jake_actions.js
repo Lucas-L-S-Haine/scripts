@@ -5,12 +5,6 @@ const { desc, task } = require('jake');
 
 const SRC_DIR = path.join(__dirname, '..');
 
-function runList() {
-  const results = returnLinkNames();
-
-  results.forEach(([jsFile, symlink]) => console.log(`${jsFile} -> ${symlink}`));
-}
-
 function runLink() {
   const filePairs = returnLinkNames();
   const targetDir = path.join(SRC_DIR, '../../bin');
@@ -107,4 +101,4 @@ function getListedLinks() {
   return result;
 }
 
-module.exports = { runList, runLink, runUnlink };
+module.exports = { runLink, runUnlink };
