@@ -51,11 +51,9 @@ function handleClean(err) {
 
 function createLinkName(jsFileName) {
   const linkName = jsFileName
+    .replace(/_/g, '-')
     .split('.')
-    .at(0)
-    .split('')
-    .replace('-', '_')
-    .join('');
+    .at(0);
 
   return linkName;
 }
