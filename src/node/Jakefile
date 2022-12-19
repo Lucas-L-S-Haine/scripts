@@ -1,14 +1,14 @@
 const { desc, task } = require('jake');
-const { runList, runLink, runClean } = require('./lib/jake_actions');
+const { runList, runLink, runUnlink } = require('./lib/jake_actions');
 
 desc('list js files and symlinks');
 task('list', runList);
 
 desc('create symbolic links at target directory');
-task('link', ['list'], runLink);
+task('link', runLink);
 
 desc('remove symbolic links');
-task('clean', runClean);
+task('clean', runUnlink);
 
 desc('alias for "clean"');
-task('unlink', runClean);
+task('unlink', runUnlink);

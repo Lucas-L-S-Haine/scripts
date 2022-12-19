@@ -34,7 +34,7 @@ function runLink() {
   console.log("\x1b[32mLinks successfully created!\x1b[00m");
 }
 
-function runClean() {
+function runUnlink() {
   const filePairs = returnLinkNames();
   const targetDir = path.join(SRC_DIR, '../../bin');
 
@@ -107,4 +107,4 @@ function getListedLinks() {
   return result;
 }
 
-module.exports = { runList, runLink, runClean };
+module.exports = { runList, runLink, runUnlink };
