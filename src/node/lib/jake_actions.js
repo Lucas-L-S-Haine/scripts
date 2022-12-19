@@ -5,42 +5,20 @@ const { desc, task } = require('jake');
 
 const SRC_DIR = path.join(__dirname, '..');
 
-function runLink() {
-  const filePairs = returnLinkNames();
-  const targetDir = path.join(SRC_DIR, '../../bin');
-
-  for (let index = 0; index < filePairs.length; index += 1) {
-    let [jsFile, symlink] = filePairs[index];
-    let target = [SRC_DIR, jsFile].join('/');
-    let path = [targetDir, symlink].join('/');
-    try {
-      fs.symlinkSync(target, path);
-    } catch (error) {
-      if (error.code === 'EEXIST') {
-        fs.unlinkSync(path);
-        fs.symlinkSync(target, path);
-      } else {
-        throw error;
-      }
-    }
+function getListedLinks() {
+  let result;
+  const links = path.join(SRC_DIR, 'links.txt');
+  try {
+    result = fs.readFileSync(links, { encoding: 'utf-8' });
+  } catch {
+    result = '';
   }
-
-  console.log("\x1b[32mLinks successfully created!\x1b[00m");
+  return result;
 }
 
-function runUnlink() {
-  const filePairs = returnLinkNames();
-  const targetDir = path.join(SRC_DIR, '../../bin');
-
-  for (let index = 0; index < filePairs.length; index += 1) {
-    let [_, symlink] = filePairs[index];
-    let path = [targetDir, symlink].join('/');
-    fs.unlink(path, handleClean);
-  }
-}
-
-function handleClean(err) {
-  if (err && err.code !== 'ENOENT') throw err;
+function getJsFiles() {
+  return fs.readdirSync(SRC_DIR)
+    .filter((filename) => /\.(js|cjs|mjs)$/.test(filename));
 }
 
 function createLinkName(jsFileName) {
@@ -85,20 +63,42 @@ function returnLinkNames() {
   return result;
 }
 
-function getJsFiles() {
-  return fs.readdirSync(SRC_DIR)
-    .filter((filename) => /\.(js|cjs|mjs)$/.test(filename));
+function handleClean(err) {
+  if (err && err.code !== 'ENOENT') throw err;
 }
 
-function getListedLinks() {
-  let result;
-  const links = path.join(SRC_DIR, 'links.txt');
-  try {
-    result = fs.readFileSync(links, { encoding: 'utf-8' });
-  } catch {
-    result = '';
+function runLink() {
+  const filePairs = returnLinkNames();
+  const targetDir = path.join(SRC_DIR, '../../bin');
+
+  for (let index = 0; index < filePairs.length; index += 1) {
+    let [jsFile, symlink] = filePairs[index];
+    let target = [SRC_DIR, jsFile].join('/');
+    let path = [targetDir, symlink].join('/');
+    try {
+      fs.symlinkSync(target, path);
+    } catch (error) {
+      if (error.code === 'EEXIST') {
+        fs.unlinkSync(path);
+        fs.symlinkSync(target, path);
+      } else {
+        throw error;
+      }
+    }
   }
-  return result;
+
+  console.log("\x1b[32mLinks successfully created!\x1b[00m");
+}
+
+function runUnlink() {
+  const filePairs = returnLinkNames();
+  const targetDir = path.join(SRC_DIR, '../../bin');
+
+  for (let index = 0; index < filePairs.length; index += 1) {
+    let [_, symlink] = filePairs[index];
+    let path = [targetDir, symlink].join('/');
+    fs.unlink(path, handleClean);
+  }
 }
 
 module.exports = { runLink, runUnlink };
