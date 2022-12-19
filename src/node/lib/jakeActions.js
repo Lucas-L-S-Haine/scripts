@@ -54,9 +54,7 @@ function createLinkName(jsFileName) {
     .split('.')
     .at(0)
     .split('')
-    .map((letter) => (
-      letter === letter.toUpperCase() ? '-' + letter.toLowerCase() : letter
-    ))
+    .replace('-', '_')
     .join('');
 
   return linkName;
