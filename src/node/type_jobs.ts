@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
-import { MongoClient, ObjectId, Db, Collection } from 'mongodb';
+import { MongoClient, ObjectId, Db, Collection } from "mongodb";
 
-const URI = 'mongodb://127.0.0.1:27017/job_hunt';
+const URI = "mongodb://127.0.0.1:27017/job_hunt";
 
 const client = new MongoClient(URI);
 
@@ -31,11 +31,11 @@ class MyCollection {
     this._database = this._client.db(database);
     this._collection = this._database.collection(collection);
     this.database = this._database.namespace;
-    this.collection = this._collection.namespace.split('.')[1];
+    this.collection = this._collection.namespace.split(".")[1];
 
-    Object.defineProperty(this, '_client', privateDescriptor(this._client));
-    Object.defineProperty(this, '_database', privateDescriptor(this._database));
-    Object.defineProperty(this, '_collection', privateDescriptor(this._collection));
+    Object.defineProperty(this, "_client", privateDescriptor(this._client));
+    Object.defineProperty(this, "_database", privateDescriptor(this._database));
+    Object.defineProperty(this, "_collection", privateDescriptor(this._collection));
   }
 
   async find(query = {}, options = {}) {
@@ -57,6 +57,6 @@ class MyCollection {
   }
 }
 
-export const apply = new MyCollection(client, 'job_hunt', 'apply');
+export const apply = new MyCollection(client, "job_hunt", "apply");
 apply.find({}, { projection: { name: true, area: true, responded: true, date: true, platform: true }})
   .then((list) => console.table(list.map(({ _id , ...attributes }: { _id: ObjectId }) => ({ _id: String(_id), ...attributes }))));

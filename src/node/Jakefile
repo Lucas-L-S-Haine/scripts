@@ -1,10 +1,10 @@
-const { desc, task } = require('jake');
-const { runList, runLink, runUnlink } = require('./lib/jake_actions');
+const { desc, task } = require("jake");
+const { runList, runLink, runUnlink } = require("./lib/jake_actions");
 
-task('default', ['link']);
+task("default", ["link"]);
 
-desc('create symbolic links at target directory');
-task('link', runLink);
+desc("create symbolic links at target directory");
+task("link", runLink);
 
-desc('remove symbolic links');
-task('unlink', runUnlink);
+desc("remove symbolic links");
+task("unlink", runUnlink);

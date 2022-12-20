@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const { basename } = require('path');
-const { _: classes, ...options } = require('minimist')(process.argv.slice(2));
+const fs = require("fs");
+const { basename } = require("path");
+const { _: classes, ...options } = require("minimist")(process.argv.slice(2));
 
 const dirname = basename(process.env.PWD);
 
@@ -26,4 +26,4 @@ function handleClasses(err) {
 classes
   .map((className) => [`${className}.java`, basename(className)])
   .forEach(([file, className]) => fs.writeFile(file, code(packageName, className),
-    { encoding: 'utf-8', mode: 0o644, flag: 'w' }, handleClasses))
+    { encoding: "utf-8", mode: 0o644, flag: "w" }, handleClasses))
