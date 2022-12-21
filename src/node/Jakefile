@@ -1,5 +1,8 @@
-const { desc, task } = require("jake");
+const { desc, task, directory } = require("jake");
 const { runList, runLink, runUnlink } = require("./lib/jake_actions");
+const path = require("path");
+
+const BIN_DIR = path.resolve("../..", "bin");
 
 task("default", ["link"]);
 
@@ -7,4 +10,6 @@ desc("create symbolic links at target directory");
 task("link", runLink);
 
 desc("remove symbolic links");
-task("unlink", runUnlink);
+task("unlink", [BIN_DIR], runUnlink);
+
+directory(BIN_DIR);
