@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const { spawn } = require("child_process");
 const { desc, task } = require("jake");
 
 const SRC_DIR = path.join(__dirname, "..");
