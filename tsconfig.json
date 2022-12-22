@@ -4,7 +4,7 @@
     "module": "commonjs",
     "rootDir": "src/node/",
     "allowJs": false,
-    "outDir": "bin/",
+    "outDir": "src/node/bin/",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
