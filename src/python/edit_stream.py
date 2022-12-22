@@ -12,6 +12,8 @@ def main():
 
     try:
         exit_status = 0
+        input_tty = open("/dev/tty", mode="r")
+        output_tty = open("/dev/tty", mode="w")
         tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
 
         if not sys.stdin.isatty():
@@ -23,7 +25,7 @@ def main():
         if not sys.stderr.isatty():
             raise RuntimeError(ERROR_MESSAGE)
 
-        run(["nvim", file.name], stdout=sys.stderr)
+        run(["nvim", file.name], stdin=input_tty, stdout=output_tty)
 
         sys.stdout.write(file.read())
 
