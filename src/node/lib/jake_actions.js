@@ -15,9 +15,30 @@ function getListedLinks() {
   return result;
 }
 
+function parseName(file) {
+  let symlink;
+  try {
+    symlink = getListedLinks()
+      .trim()
+      .split("\n")
+      .filter((filename) => RegExp(file).test(filename))[0]
+      .split(":")[1];
+  } catch {
+    symlink = file
+      .replace(/_/, "-")
+      .replace(/\.(js|cjs|mjs)$/, "");
+  }
+
+  if (symlink !== "") return symlink;
+}
+
 function getJsFiles() {
   return fs.readdirSync(SRC_DIR)
     .filter((filename) => /\.(js|cjs|mjs)$/.test(filename));
+}
+
+function getLinkName(jsFileName) {
+  // const linkName = jsFileName
 }
 
 function createLinkName(jsFileName) {
@@ -100,4 +121,4 @@ function runUnlink() {
   }
 }
 
-module.exports = { runLink, runUnlink };
+module.exports = { runLink, runUnlink, parseName };
