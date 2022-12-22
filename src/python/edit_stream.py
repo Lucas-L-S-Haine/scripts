@@ -27,7 +27,8 @@ def main():
         sys.stdout.write(file.read())
 
     finally:
-        file.close()
+        if file:
+            file.close()
         os.remove(tmp_file.name)
 
 
