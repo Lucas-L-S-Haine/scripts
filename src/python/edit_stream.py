@@ -6,12 +6,15 @@ from subprocess import run
 
 
 def main():
-    """Reads input from stdin, edits on neovim and pipes into stdout"""
+    """Reads input from stdin, edits on EDITOR and pipes into stdout"""
 
     try:
         input_tty = open("/dev/tty", mode="r")
         output_tty = open("/dev/tty", mode="w")
         tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
+
+        EDITOR = os.environ.get("EDITOR", "vi")
+        VISUAL = os.environ.get("VISUAL", EDITOR)
 
         if not sys.stdin.isatty():
             with open(tmp_file.name, mode="w") as file:
@@ -19,7 +22,7 @@ def main():
 
         file = open(tmp_file.name, mode="r")
 
-        run(["nvim", file.name], stdin=input_tty, stdout=output_tty)
+        run([VISUAL, file.name], stdin=input_tty, stdout=output_tty)
 
         sys.stdout.write(file.read())
 
