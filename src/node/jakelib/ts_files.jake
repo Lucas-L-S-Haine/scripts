@@ -1,5 +1,6 @@
 const { task, file, desc, directory, Task } = require("jake");
 const fs = require("fs");
+const fsp = require("fs/promises");
 const path = require("path");
 const cp = require("child_process");
 const { Console } = require("node:console");
@@ -23,28 +24,27 @@ const getSrc = (file) => path.resolve(".", fs.readdirSync(".")
   .find((tsFile) => parseName(tsFile) === path.basename(file)));
 
 for (const link of outFiles) {
-  file(link, [BIN_DIR, "tsc"], () => {
-    const target = path.resolve("dist", fs.readdirSync("dist")
-      .filter((jsFile) => jsExt.test(jsFile))
-      .find((jsFile) => parseName(jsFile) === path.basename(link)));
+  file(link, [BIN_DIR, "tsc"], async () => {
+    let fileHandle;
+    try {
+      const target = path.resolve("dist", fs.readdirSync("dist")
+        .filter((jsFile) => jsExt.test(jsFile))
+        .find((jsFile) => parseName(jsFile) === path.basename(link)));
+      if (!target) throw new Error("couldn’t find target");
 
-    if (!target) throw new Error("couldn’t find target");
-    const writeStream = fs.createWriteStream(link, { mode: 0o755 });
-    const output = new Console({ stdout: writeStream });
-    const content = fs.readFileSync(target).toString();
+      fileHandle = await fsp.open(target);
+      if (!fileHandle) throw new Error("cannot read file");
 
-    if (!content) throw new Error("cannot read file");
-    const linesOfCode = content.toString().trim().split("\n");
-    linesOfCode.shift();
-    linesOfCode.unshift("#!/usr/bin/env node");
-    const code = linesOfCode.join("\n");
+      const linesOfCode = [];
+      for await (const line of fileHandle.readLines()) linesOfCode.push(line);
+      linesOfCode.shift();
+      linesOfCode.unshift("#!/usr/bin/env node");
 
-    output.log(code);
-  });
-
-  Task[link].on("start", () => {
-    const stream = fs.createWriteStream(link, { mode: 0o755 });
-    stream.close();
+      const code = linesOfCode.join("\n");
+      fs.writeFileSync(link, code, { mode: 0o755 });
+    } finally {
+      fileHandle.close();
+    }
   });
 }
 
