@@ -1,42 +1,26 @@
-const { desc, task, file, directory } = require("jake");
-const { parseName, runLink, runUnlink } = require("./lib/jake_actions");
+const { desc, task, file, directory, Task } = require("jake");
+const { parseName, runUnlink } = require("./lib/jake_actions");
 const fs = require("fs");
 const path = require("path");
 
 const BIN_DIR = path.resolve("../..", "bin");
+
+const ext = /^.+\.(js|cjs|mjs|ts)$/;
+
 const srcFiles = fs.readdirSync(".")
-  .filter((file) => /^.+\.(js|cjs|mjs)$/.test(file));
+  .filter((file) => ext.test(file));
 const outFiles = srcFiles.map(parseName)
+  .filter((file) => file)
   .map((file) => path.resolve(BIN_DIR, file));
 
 task("default", ["link"]);
 
 desc("create symbolic links at target directory");
-task("link", outFiles);
+task("link", outFiles, () => {
+  Task.clean.invoke();
+});
 
 desc("remove symbolic links");
 task("unlink", [BIN_DIR], runUnlink);
 
 directory(BIN_DIR);
-
-for (const link of outFiles) {
-  file(link, [BIN_DIR], () => {
-    const target = path.resolve(".", fs.readdirSync(".")
-      .filter((jsFile) => /^.+\.(js|cjs|mjs)$/.test(jsFile))
-      .find((jsFile) => parseName(jsFile) === path.basename(link)));
-    try {
-      fs.symlinkSync(target, link);
-    } catch (error) {
-      if (error.code === "EEXIST") {
-        fs.unlinkSync(link);
-        fs.symlinkSync(target, link);
-      } else {
-        throw error;
-      }
-    }
-  });
-}
-
-/* create file */
-// const stream = fs.createWriteStream("foo/bar", { mode: 0o755 });
-// stream.close();
