@@ -4,7 +4,7 @@ const fsp = require("fs/promises");
 const path = require("path");
 const cp = require("child_process");
 const { Console } = require("node:console");
-const { parseName, fileExists } = require("../lib/jake_actions");
+const { parseName, fileExists, fileIsDir } = require("../lib/jake_actions");
 
 const tsc = path.resolve("../..", "node_modules/.bin", "tsc");
 
@@ -57,6 +57,16 @@ task("tsc", shouldRun, () => {
   cp.execFileSync(tsc);
 });
 
-task("clean", () => {
+task("clean", ["tsc"], () => {
+  for (const file of fs.readdirSync("dist")) {
+    if (fileIsDir(file)) {
+      const oldPath = path.resolve("dist", file);
+      const newPath = path.resolve(BIN_DIR, path.basename(file));
+
+      fs.rmSync(newPath, { force: true, recursive: true });
+      fs.renameSync(oldPath, newPath);
+    }
+  }
+
   fs.rmSync("dist", { force: true, recursive: true });
 });
