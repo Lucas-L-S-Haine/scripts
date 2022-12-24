@@ -20,6 +20,29 @@ function fileExists(file) {
   return exists;
 }
 
+function fileIsDir(file) {
+  if (!fileExists(file)) return false;
+  return fs.statSync(file).isDirectory();
+}
+
+function readDirectoryTree(file = ".", full = false) {
+  if (!fileIsDir(file)) return [file];
+
+  const result = [];
+  for (const filename of fs.readdirSync(file)) {
+    let filepath;
+    if (full) {
+      filepath = path.resolve(file, filename);
+    } else {
+      filepath = path.join(file, filename);
+    }
+
+    result.push(...readDirectoryTree(filepath));
+  }
+
+  return result;
+}
+
 function getListedLinks() {
   let result;
   const links = path.join(SRC_DIR, "links.txt");
@@ -57,4 +80,4 @@ function runUnlink() {
     .forEach((file) => fs.rmSync(file, { force: true }));
 }
 
-module.exports = { runUnlink, parseName, fileExists };
+module.exports = { runUnlink, parseName, fileExists, fileIsDir, readDirectoryTree };
