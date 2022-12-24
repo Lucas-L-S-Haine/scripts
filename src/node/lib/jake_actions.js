@@ -25,6 +25,17 @@ function fileIsDir(file) {
   return fs.statSync(file).isDirectory();
 }
 
+function directoryIsEmpty(directory) {
+  let isEmpty = false;
+  try {
+    if (fs.readdirSync(directory).length === 0) isEmpty = true;
+  } catch {
+    return false;
+  }
+
+  return isEmpty;
+}
+
 function readDirectoryTree(file = ".", full = false) {
   if (!fileIsDir(file)) return [file];
 
@@ -72,12 +83,30 @@ function parseName(file) {
 }
 
 function runUnlink() {
+  const tree = [];
+
   fs.readdirSync(".")
     .filter((file) => ext.test(file))
     .map(parseName)
     .filter((file) => file)
     .map((file) => path.resolve(BIN_DIR, file))
     .forEach((file) => fs.rmSync(file, { force: true }));
+
+  fs.readdirSync(".")
+    .filter(fileIsDir)
+    .map((dir) => readDirectoryTree(dir, false))
+    .forEach((fileList) => tree.push(...fileList));
+
+  tree
+    .map((file) => path.resolve(BIN_DIR, file))
+    .map((file) => file.replace(/\.ts$/, ".js"))
+    .filter(fileExists)
+    .forEach((file) => fs.rmSync(file));
+
+  fs.readdirSync(BIN_DIR)
+    .map((dir) => path.resolve(BIN_DIR, dir))
+    .filter(directoryIsEmpty)
+    .forEach((dir) => fs.rmdirSync(dir));
 }
 
-module.exports = { runUnlink, parseName, fileExists, fileIsDir, readDirectoryTree };
+module.exports = { runUnlink, parseName, fileExists, fileIsDir, readDirectoryTree, directoryIsEmpty };
