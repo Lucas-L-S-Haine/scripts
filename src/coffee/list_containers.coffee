@@ -30,8 +30,8 @@ try
     { stdout: docker_output } = await run docker_command
 
     docker_output = docker_output
+        .trim()
         .split "\n"
-        .slice 0, -1
 
     [labels, containers...] = (row.split /\s{2,}/ for row in docker_output)
 
