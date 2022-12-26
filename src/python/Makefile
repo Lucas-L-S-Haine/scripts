@@ -13,6 +13,11 @@ file_names = $(foreach file, $(src_files), $(call name_out, $(file)))
 
 out_files = $(foreach file, $(file_names), $(bin_dir)/$(file))
 
+all: install link
+
+install: requirements.txt
+	pip install -r $<
+
 link: $(out_files)
 
 unlink: | $(bin_dir)
@@ -26,4 +31,4 @@ $(bin_dir):
 $(out_files):
 	ln -s $(join $(CURDIR)/, $(call name_src, $(notdir $@))) $@
 
-.PHONY: link unlink
+.PHONY: all install link unlink
