@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 comfy-table = "6.1.3"
 clap = "4.0.32"
+regex = "1.7.0"
 
 [[bin]]
 name = "list-containers"
