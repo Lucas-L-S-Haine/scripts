@@ -1,11 +1,24 @@
+use std::env::args;
 use std::process::Command;
+use std::collections::VecDeque;
 use comfy_table::Table;
 
 const UTF8_SOLID_LINES: &'static str = "││──├─┼┤│    ┬┴┌┐└┘";
 
 fn main() {
+    let mut argv = VecDeque::new();
+
+    for argument in args() {
+        if argument != "ps" {
+            argv.push_back(argument);
+        }
+    }
+
+    argv.pop_front();
+
     let docker_command = Command::new("docker")
         .arg("ps")
+        .args(argv)
         .args(["--format",
                "table{{.ID}};;{{.Names}};;{{.Image}};;{{.Status}}"])
         .output()
