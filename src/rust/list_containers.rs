@@ -1,7 +1,7 @@
 use std::process::Command;
 use comfy_table::Table;
 
-const UTF8_SOLID_LINES: &'static str = "││──├─┼┤│─┼├┤┬┴┌┐└┘";
+const UTF8_SOLID_LINES: &'static str = "││──├─┼┤│    ┬┴┌┐└┘";
 
 fn main() {
     let docker_command = Command::new("docker")
