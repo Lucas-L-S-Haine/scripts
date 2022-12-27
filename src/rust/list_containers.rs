@@ -2,25 +2,39 @@ use std::env::args;
 use std::process::Command;
 use std::collections::VecDeque;
 use comfy_table::Table;
+use regex::Regex;
 
 const UTF8_SOLID_LINES: &'static str = "││──├─┼┤│    ┬┴┌┐└┘";
+
+fn has_format(argument: &String) -> bool {
+    let re = Regex::new(r"^--format").unwrap();
+    return re.is_match(argument.as_str());
+}
 
 fn main() {
     let mut argv = VecDeque::new();
 
+    let mut has_format_argument: bool = false;
+
     for argument in args() {
+        if has_format(&argument) {
+            has_format_argument = true;
+        }
         if argument != "ps" {
             argv.push_back(argument);
         }
     }
 
     argv.pop_front();
+    if !has_format_argument {
+        argv.push_back("--format".to_string());
+        argv.push_back("table{{.ID}};;{{.Names}};;{{.Image}};;{{.Status}}"
+            .to_string());
+    }
 
     let docker_command = Command::new("docker")
         .arg("ps")
         .args(argv)
-        .args(["--format",
-               "table{{.ID}};;{{.Names}};;{{.Image}};;{{.Status}}"])
         .output()
         .expect("failed to execute process");
 
