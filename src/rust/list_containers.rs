@@ -45,7 +45,7 @@ fn main() {
         Err(error) => panic!("{:?}", error),
     };
 
-    command_output.pop();
+    command_output = String::from(command_output.trim());
 
     let mut output_lines: Vec<&str> = vec![];
     let lines: Vec<&str> = command_output.split("\n").collect();
