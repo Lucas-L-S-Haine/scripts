@@ -26,7 +26,7 @@ def main():
         body = error.__str__()
 
         run(["notify-send", "--expire-time=10000", summary, body])
-    sys.exit(1)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
