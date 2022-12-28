@@ -21,7 +21,7 @@ def main():
         run(["doas", "-n", "timedatectl", "set-time", time_str])
         time.sleep(1)
         run(["doas", "-n", "timedatectl", "set-ntp", "true"])
-    except BaseException as error:
+    except Exception as error:
         summary = "Error: failed to update clock"
         body = error.__str__()
 
