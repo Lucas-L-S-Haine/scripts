@@ -11,7 +11,7 @@ def main():
     try:
         input_tty = open("/dev/tty", mode="r")
         output_tty = open("/dev/tty", mode="w")
-        tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False).file
+        tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
 
         EDITOR = os.environ.get("EDITOR", "vi")
         VISUAL = os.environ.get("VISUAL", EDITOR)
