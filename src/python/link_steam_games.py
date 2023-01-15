@@ -42,7 +42,7 @@ def main():
 
         csv_reader = csv.DictReader(game_list_file)
         games = [row for row in csv_reader]
-    except:
+    except FileNotFoundError:
         print(f"Error: {ERROR_MESSAGE}", file=sys.stderr)
         sys.exit(3)
     finally:
