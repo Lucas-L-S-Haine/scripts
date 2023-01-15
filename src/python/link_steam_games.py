@@ -42,6 +42,7 @@ def main():
         games = [row for row in reader]
     except:
         print(f"Error: {ERROR_MESSAGE}", file=sys.stderr)
+        sys.exit(3)
     finally:
         if file_exists:
             game_list_file.close()
