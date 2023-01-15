@@ -4,6 +4,13 @@ import sys
 import csv
 
 
+def newlines(text_list):
+    for index in range(len(text_list)):
+        text_list[index] += "\n"
+
+    return text_list
+
+
 def main():
     """Gets list of games from csv file and creates an executable script for
     each one of them"""
@@ -38,13 +45,6 @@ def main():
     finally:
         if file_exists:
             game_list_file.close()
-
-
-    def newlines(text_list):
-        for index in range(len(text_list)):
-            text_list[index] += "\n"
-
-        return text_list
 
 
     for game in games:
