@@ -38,8 +38,8 @@ def main():
         game_list_file = open(STEAM_GAMES_CSV, mode="r", encoding="utf-8")
         file_exists = True
 
-        reader = csv.DictReader(game_list_file)
-        games = [row for row in reader]
+        csv_reader = csv.DictReader(game_list_file)
+        games = [row for row in csv_reader]
     except:
         print(f"Error: {ERROR_MESSAGE}", file=sys.stderr)
         sys.exit(3)
