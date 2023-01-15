@@ -4,6 +4,17 @@ import sys
 import csv
 
 
+HOME = os.environ["HOME"]
+PATH = os.environ["PATH"]
+STEAM_GAMES_CSV = f"{HOME}/Documents/steam_games.csv"
+GAMES_DIR = f"{HOME}/.games"
+
+ERROR_MESSAGE = f"""file {STEAM_GAMES_CSV} not found.
+Please ensure the file is on the correct location and has the correct data.
+"""
+TARGET_DIR_NOT_IN_PATH = f"target directory {GAMES_DIR} is not in $PATH"
+
+
 def newlines(text_list):
     for index in range(len(text_list)):
         text_list[index] += "\n"
@@ -14,15 +25,6 @@ def newlines(text_list):
 def main():
     """Gets list of games from csv file and creates an executable script for
     each one of them"""
-
-    HOME = os.environ["HOME"]
-    PATH = os.environ["PATH"]
-    STEAM_GAMES_CSV = f"{HOME}/Documents/steam_games.csv"
-    ERROR_MESSAGE = f"""file {STEAM_GAMES_CSV} not found.
-    Please ensure the file is on the correct location and has the correct data.
-    """
-    GAMES_DIR = f"{HOME}/.games"
-    TARGET_DIR_NOT_IN_PATH = f"target directory {GAMES_DIR} is not in $PATH"
 
 
     try:
