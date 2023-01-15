@@ -28,7 +28,7 @@ def main():
     try:
         path_list = PATH.split(":")
         path_list.index(GAMES_DIR)
-    except:
+    except ValueError:
         print(f"Error: {TARGET_DIR_NOT_IN_PATH}", file=sys.stderr)
         sys.exit(2)
 
