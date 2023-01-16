@@ -27,6 +27,14 @@ def main():
     each one of them"""
 
 
+    should_delete = False
+    try:
+        if sys.argv[1] in ["delete", "remove", "unlink"]:
+            should_delete = True
+    except IndexError:
+        pass
+
+
     try:
         path_list = PATH.split(":")
         path_list.index(GAMES_DIR)
@@ -50,15 +58,24 @@ def main():
             game_list_file.close()
 
 
-    for game in games:
-        gameid = game["gameid"]
-        name = game["name"]
-        file_name = f"{GAMES_DIR}/{name}"
-        command = ["#!/bin/sh", "", f"exec steam steam://rungameid/{gameid}"]
+    if not should_delete:
+        for game in games:
+            gameid = game["gameid"]
+            name = game["name"]
+            file_name = f"{GAMES_DIR}/{name}"
+            command = ["#!/bin/sh", "", f"exec steam steam://rungameid/{gameid}"]
 
-        with open(file_name, mode="w", encoding="utf-8") as file:
-            file.writelines(newlines(command))
-            os.chmod(file.name, 0o755)
+            with open(file_name, mode="w", encoding="utf-8") as file:
+                file.writelines(newlines(command))
+                os.chmod(file.name, 0o755)
+    else:
+        for game in games:
+            name = game["name"]
+            file_name = f"{GAMES_DIR}/{name}"
+            try:
+                os.unlink(file_name)
+            except FileNotFoundError:
+                pass
 
 
 if __name__ == "__main__":
