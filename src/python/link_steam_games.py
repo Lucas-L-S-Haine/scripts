@@ -6,7 +6,8 @@ import csv
 
 HOME = os.environ["HOME"]
 PATH = os.environ["PATH"]
-STEAM_GAMES_CSV = f"{HOME}/Documents/steam_games.csv"
+XDG_CONFIG_HOME = os.environ.get("XDG_CONFIG_HOME", f"{HOME}/.config")
+STEAM_GAMES_CSV = f"{XDG_CONFIG_HOME}/steam_games.csv"
 GAMES_DIR = f"{HOME}/.games"
 
 ERROR_MESSAGE = f"""file {STEAM_GAMES_CSV} not found.
