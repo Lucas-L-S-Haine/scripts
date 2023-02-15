@@ -3,10 +3,30 @@
 TIMESTAMP="$(date +%s)"
 FILE="${HOME}/Pictures/screenshots/${TIMESTAMP}-print.png"
 
+
+has() {
+	(type $1 &> /dev/null)
+	status=$?
+
+	return ${status}
+}
+
+
+if ! has maim; then
+	if has notify-send; then
+		notify-send "Error" "maim is not installed"
+	fi
+	exit 1
+fi
+
+
 maim "${FILE}"
 
+
 sleep 0.1
-notify-send --icon="${FILE}" screenshot "file available at: ${FILE}"
+if has notify-send; then
+	notify-send --icon="${FILE}" screenshot "file available at: ${FILE}"
+fi
 
 # c-pin's script
 # maim -s | xclip -selection clipboard -t image/png
