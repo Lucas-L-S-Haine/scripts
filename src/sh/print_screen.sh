@@ -24,10 +24,10 @@ getopts s flag 2> /dev/null
 
 case ${flag} in
 	s)
-		maim -s "${FILE}"
+		maim -us "${FILE}"
 		;;
 	\?)
-		maim "${FILE}"
+		maim --hidecursor "${FILE}"
 		;;
 esac
 
