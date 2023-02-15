@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/bin/sh
 
 TIMESTAMP="$(date +%s)"
 FILE="${HOME}/Pictures/screenshots/${TIMESTAMP}-print.png"
