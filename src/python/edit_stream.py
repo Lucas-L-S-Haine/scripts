@@ -2,19 +2,39 @@
 import os
 import sys
 import tempfile
-from subprocess import run
+from subprocess import run, check_output
+
+
+TTY_NAME = "/dev/" + check_output([
+    "ps",
+    "--pid",
+    f"{os.getppid()}",
+    "--format",
+    "tty"]).split()[-1].decode("utf-8")
+
+
+def get_editor():
+    """Get editor name by reading environment variables VISUAL and EDITOR """
+
+    EDITOR = os.environ.get("EDITOR", "vi")
+    VISUAL = os.environ.get("VISUAL", EDITOR)
+
+    if VISUAL.find("emacs") != -1 and EDITOR.find("emacs") == -1:
+        return f"emacsclient --tty --alternate-editor={EDITOR}"
+    elif VISUAL.find("emacs") != -1:
+        return "emacsclient --tty --alternate-editor=vi"
+
+    return VISUAL
 
 
 def main():
     """Reads input from stdin, edits on EDITOR and pipes into stdout"""
 
     try:
-        input_tty = open("/dev/tty", mode="r")
-        output_tty = open("/dev/tty", mode="w")
+        input_tty = open(TTY_NAME, mode="r")
+        output_tty = open(TTY_NAME, mode="w")
         tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
-
-        EDITOR = os.environ.get("EDITOR", "vi")
-        VISUAL = os.environ.get("VISUAL", EDITOR)
+        editor = get_editor()
 
         if not sys.stdin.isatty():
             with open(tmp_file.name, mode="w") as file:
@@ -22,13 +42,15 @@ def main():
 
         file = open(tmp_file.name, mode="r")
 
-        run([VISUAL, file.name], stdin=input_tty, stdout=output_tty)
+        run([*editor.split(), file.name], stdin=input_tty, stdout=output_tty)
 
         sys.stdout.write(file.read())
 
     finally:
-        if file:
-            file.close()
+        file.close()
+        input_tty.close()
+        output_tty.close()
+
         os.remove(tmp_file.name)
 
 
