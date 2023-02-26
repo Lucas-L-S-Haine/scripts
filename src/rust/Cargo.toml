@@ -20,3 +20,7 @@ path = "list_containers.rs"
 [[bin]]
 name = "get-option"
 path = "get_option.rs"
+
+[[bin]]
+name = "show-clock-icon"
+path = "show_clock_icon.rs"
