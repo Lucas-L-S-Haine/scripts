@@ -31,7 +31,7 @@ fn main() {
         hour if 10.30 <= hour && hour < 11.00 => '🕥',
         hour if 11.00 <= hour && hour < 11.30 => '🕚',
         hour if 11.30 <= hour && hour < 00.00 => '🕦',
-        _ => ' ',
+        _ => panic!("Cannot print clock icon"),
     };
 
     println!("{}", clock_icon);
