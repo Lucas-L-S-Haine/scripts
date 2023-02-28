@@ -12,7 +12,7 @@ def write_toml():
     pass
 
 
-main():
+def main():
     pass
 
 
