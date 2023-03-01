@@ -33,6 +33,8 @@ fn print_clock_icon() -> char {
         hour if 10.50 <= hour && hour < 11.00 => '🕥',
         hour if 11.00 <= hour && hour < 11.50 => '🕚',
         hour if 11.50 <= hour && hour < 12.00 => '🕦',
+        hour if 12.00 <= hour && hour < 12.50 => '🕛',
+        hour if 12.50 <= hour && hour < 13.00 => '🕧',
         _ => panic!("Cannot print clock icon"),
     };
 
