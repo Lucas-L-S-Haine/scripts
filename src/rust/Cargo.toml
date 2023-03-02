@@ -24,3 +24,7 @@ path = "get_option.rs"
 [[bin]]
 name = "show-clock-icon"
 path = "show_clock_icon.rs"
+
+[[bin]]
+name = "get-language"
+path = "get_language.rs"
