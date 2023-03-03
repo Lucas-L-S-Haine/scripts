@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import sys
-import json
 
-import toml
+import yaml
 
 
 def read_input():
@@ -12,16 +11,16 @@ def read_input():
         return sys.stdin.read().strip()
 
 
-def read_toml():
+def parse(yaml_string):
+    return yaml.safe_load(yaml_string)
+
+
+def write_yaml():
     pass
 
 
-def write_toml(obj):
-    return toml.dumps(json.loads(obj.replace("'", '"'))).strip()
-
-
 def main():
-    print(write_toml(read_input()))
+    print(parse(read_input()))
 
 
 if __name__ == "__main__":
