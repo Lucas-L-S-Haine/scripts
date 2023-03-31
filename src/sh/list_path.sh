@@ -1,3 +1,3 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
-echo "${PATH}" | tr ':' $'\n'
+echo "${PATH}" | sed 's/:/\n/g'
