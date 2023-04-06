@@ -8,20 +8,38 @@ from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 
 
+def get_time():
+    try:
+        time_str = sys.argv[1]
+    except IndexError:
+        time_str = f"{localtime.date()} {localtime.time()}"
+
+    return time_str
+
+
 def main():
     """Fetches time from Google and updates system clock"""
 
     try:
-        datetime = request("head", "https://www.google.com").headers["date"]
+        if len(sys.argv) == 1:
+            datetime = request("head", "https://www.google.com").headers["date"]
 
-        localtime = parse(datetime) + relativedelta(hours=-3)
-        time_str = f"{localtime.date()} {localtime.time()}"
+            localtime = parse(datetime) + relativedelta(hours=-3)
+            time_str = get_time()
 
-        run(["doas", "-n", "timedatectl", "set-ntp", "false"])
-        time.sleep(1)
-        run(["doas", "-n", "timedatectl", "set-time", time_str])
-        time.sleep(1)
-        run(["doas", "-n", "timedatectl", "set-ntp", "true"])
+            run(["doas", "-n", "timedatectl", "set-ntp", "false"])
+            time.sleep(1)
+            run(["doas", "-n", "timedatectl", "set-time", time_str])
+            time.sleep(1)
+            run(["doas", "-n", "timedatectl", "set-ntp", "true"])
+        else:
+            time_str = get_time()
+
+            run(["doas", "-n", "timedatectl", "set-ntp", "false"])
+            time.sleep(1)
+            run(["doas", "-n", "timedatectl", "set-time", time_str])
+            time.sleep(1)
+            run(["doas", "-n", "timedatectl", "set-ntp", "true"])
     except Exception as error:
         summary = "Error: failed to update clock"
         body = error.__str__()
