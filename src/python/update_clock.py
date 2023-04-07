@@ -8,6 +8,14 @@ from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 
 
+def notify(summary: str, body: str):
+    if sys.stderr.isatty():
+        print(summary, file=sys.stderr)
+        print(body, file=sys.stderr)
+    else:
+        run(["notify-send", "--expire-time=10000", summary, body])
+
+
 def get_time():
     try:
         time_str = sys.argv[1]
@@ -35,7 +43,7 @@ def main():
         summary = "Error: failed to update clock"
         body = str(error)
 
-        run(["notify-send", "--expire-time=10000", summary, body])
+        notify(summary, body)
         sys.exit(1)
 
 
