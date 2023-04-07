@@ -33,7 +33,7 @@ def main():
         run(["doas", "-n", "timedatectl", "set-ntp", "true"])
     except Exception as error:
         summary = "Error: failed to update clock"
-        body = error.__str__()
+        body = str(error)
 
         run(["notify-send", "--expire-time=10000", summary, body])
         sys.exit(1)
