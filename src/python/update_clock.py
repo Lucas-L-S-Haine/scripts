@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"This script updates the system clock"
 import sys
 import time
 from subprocess import run
@@ -9,6 +10,8 @@ from dateutil.relativedelta import relativedelta
 
 
 def notify(summary: str, body: str):
+    "Send error messages through stderr or notify-send, if stderr is not a tty"
+
     if sys.stderr.isatty():
         print(summary, file=sys.stderr)
         print(body, file=sys.stderr)
@@ -17,6 +20,8 @@ def notify(summary: str, body: str):
 
 
 def get_time():
+    "Get date and time string from argv or fetch from Google"
+
     try:
         time_str = sys.argv[1]
     except IndexError:
@@ -29,7 +34,7 @@ def get_time():
 
 
 def main():
-    """Fetches time from Google and updates system clock"""
+    "Call the get_time function and use it to update the system clock"
 
     try:
         time_str = get_time()
