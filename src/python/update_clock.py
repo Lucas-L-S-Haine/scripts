@@ -1,5 +1,18 @@
 #!/usr/bin/env python
-"This script updates the system clock"
+"""update_clock.py - This script updates the system clock
+
+Usage:
+    update_clock.py [-h | --help]
+    update_clock.py [<datetime> | <date> <time>]
+
+Options:
+    -h, --help  show this help message and exit
+
+Arguments:
+    date        a string with date, formatted as YYYY-MM-DD
+    time        a string with time, formatted as hh:mm:ss
+    datetime    a string with date and time in ISO format
+"""
 import sys
 import time
 from subprocess import run
@@ -7,6 +20,7 @@ from subprocess import run
 from requests import request
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
+from docopt import docopt
 
 
 def notify(summary: str, body: str):
@@ -22,13 +36,17 @@ def notify(summary: str, body: str):
 def get_time():
     "Get date and time string from argv or fetch from Google"
 
-    try:
-        time_str = sys.argv[1]
-    except IndexError:
+    options = docopt(__doc__)
+
+    if len(sys.argv[1:]) == 0:
         datetime = request("head", "https://www.google.com").headers["date"]
 
         localtime = parse(datetime) + relativedelta(hours=-3)
         time_str = f"{localtime.date()} {localtime.time()}"
+    elif len(sys.argv[1:]) == 1:
+        time_str = options["<datetime>"]
+    elif len(sys.argv[1:]) == 2:
+        time_str = f"{options['<date>']} {options['<time>']}"
 
     return time_str
 
