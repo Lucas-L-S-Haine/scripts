@@ -1,7 +1,7 @@
 SHELL       = node
 .SHELLFLAGS = -e
 
-define RULE
+define MAKE :=
 	function handleRecipe(err, stdout, stderr) {
 		if (err) {
 			console.error(stderr.trim());
