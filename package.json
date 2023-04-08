@@ -4,7 +4,7 @@
   "dependencies": {
     "@types/node": "^18.7.13",
     "coffeescript": "^2.7.0",
-    "jake": "^10.8.5",
+    "jake": "https://github.com/llucasls/jake",
     "minimist": "^1.2.6",
     "mongodb": "^4.10.0",
     "typescript": "^4.8.4"
