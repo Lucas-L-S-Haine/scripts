@@ -36,13 +36,13 @@ function directoryIsEmpty(directory) {
   return isEmpty;
 }
 
-function readDirectoryTree(file = ".", full = false) {
+function readDirectoryTree(file = ".", returnFullPath = false) {
   if (!fileIsDir(file)) return [file];
 
   const result = [];
   for (const filename of fs.readdirSync(file)) {
     let filepath;
-    if (full) {
+    if (returnFullPath) {
       filepath = path.resolve(file, filename);
     } else {
       filepath = path.join(file, filename);
