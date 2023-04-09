@@ -1,5 +1,5 @@
-SHELL       = node
-.SHELLFLAGS = -e
+SHELL       := /usr/bin/node
+.SHELLFLAGS := -e
 
 # turn $(MAKE) into a namespace for the "make" function
 define MAKE :=
