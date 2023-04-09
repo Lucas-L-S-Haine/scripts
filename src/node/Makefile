@@ -16,6 +16,6 @@ endef
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
 $(BIN_DIR):
-	@fs.mkdirSync("$(BIN_DIR)", { recursive: true, mode: 0o755 });
+	@fs.mkdirSync(`$(BIN_DIR)`, { recursive: true, mode: 0o755 });
 
 .ONESHELL:
