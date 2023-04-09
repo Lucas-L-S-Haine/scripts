@@ -16,6 +16,46 @@ endef
 
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
+EXT = %.js %.cjs %.mjs %.ts
+
+SRC_FILES = $(filter $(EXT), $(wildcard *))
+
+LINKS_TXT = $(file < links.txt)
+
+define LINKED_FILES :=
+$(strip
+	$(foreach FILE, $(LINKS_TXT),
+		$(firstword
+			$(subst :, ,$(FILE))
+		)
+	)
+)
+endef
+
+# create link names from links.txt
+define OUT_FILES :=
+$(strip
+	$(foreach FILE, $(LINKS_TXT),
+		$(word 2,
+			$(subst :, ,$(FILE))
+		)
+	)
+)
+endef
+
+# add files that are not listed in links.txt
+define OUT_FILES +=
+$(strip
+	$(basename
+		$(subst _,-,
+			$(filter-out $(LINKED_FILES),
+				$(SRC_FILES)
+			)
+		)
+	)
+)
+endef
+
 all: link
 
 # create symbolic links at target directory
