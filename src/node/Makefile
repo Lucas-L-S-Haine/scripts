@@ -16,7 +16,17 @@ endef
 
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
+all: link
+
+# create symbolic links at target directory
+link:
+
+# remove symbolic links
+unlink:
+
 $(BIN_DIR):
 	@fs.mkdirSync(`$(BIN_DIR)`, { recursive: true, mode: 0o755 });
+
+.PHONY: all link unlink
 
 .ONESHELL:
