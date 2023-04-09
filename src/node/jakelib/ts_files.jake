@@ -3,7 +3,6 @@ const fs = require("fs");
 const fsp = require("fs/promises");
 const path = require("path");
 const cp = require("child_process");
-const { Console } = require("node:console");
 const { parseName, fileExists, fileIsDir } = require("../lib/jake_actions");
 
 const tsc = path.resolve("../..", "node_modules/.bin", "tsc");
