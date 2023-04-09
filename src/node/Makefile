@@ -1,6 +1,7 @@
 SHELL       = node
 .SHELLFLAGS = -e
 
+# turn $(MAKE) into a namespace for the "make" function
 define MAKE :=
 	function handleRecipe(err, stdout, stderr) {
 		if (err) {
