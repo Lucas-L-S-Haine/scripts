@@ -17,7 +17,8 @@ endef
 
 OS := import os
 
-IS_EXEC = $(shell $(OS); print("$1") if os.access("$1", os.X_OK) else None)
+OK = os.R_OK + os.X_OK
+IS_EXEC = $(shell $(OS); print("$1") if os.access("$1", $(OK)) else None)
 
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
