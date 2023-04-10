@@ -1,34 +1,111 @@
-bin_dir := $(abspath $(CURDIR)/../../bin)
-ext := .py
-src_files := $(wildcard *$(ext))
-links := $(shell cat links.txt)
+SHELL       := /usr/bin/python3
+.SHELLFLAGS := -c
 
-get_name = $(shell grep $(1) links.txt | cut -d : -f 2)
-rename = $(subst _,-,$(subst $(ext),,$(1)))
+# turn $(MAKE) into a namespace for the "make" function
+define MAKE :=
+	from subprocess import run as _run
+	def make(args: str):
+		_run(["$(MAKE)", *args.split()])
+endef
 
-name_out = $(if $(findstring $(1), $(links)), $(call get_name, $(1)), $(call rename, $(1)))
-name_src = $(if $(shell grep $(1) links.txt), $(shell grep $(1) links.txt | cut -d : -f 1), $(patsubst %,%$(ext),$(subst -,_,$(1))))
+define PIP :=
+	from sys import executable as python
+	from subprocess import run as _run
+	def pip(args: str):
+		_run([python, "-m", "pip", *args.split()])
+endef
 
-file_names = $(foreach file, $(src_files), $(call name_out, $(file)))
+OS := import os
 
-out_files = $(foreach file, $(file_names), $(bin_dir)/$(file))
+IS_EXEC = $(shell $(OS); print("$1") if os.access("$1", os.X_OK) else None)
+
+BIN_DIR := $(abspath $(CURDIR)/../../bin)
+
+EXT = .py
+
+define SRC_FILES
+$(strip
+	$(foreach FILE, $(wildcard *$(EXT)),
+		$(call IS_EXEC,$(FILE))
+	)
+)
+endef
+
+LINKS_TXT = $(file < links.txt)
+
+define LINKED_FILES
+$(strip
+	$(foreach FILE, $(LINKS_TXT),
+		$(firstword
+			$(subst :, ,$(FILE))
+		)
+	)
+)
+endef
+
+# create link names from links.txt
+define OUT_FILES :=
+$(strip
+	$(foreach FILE, $(LINKS_TXT),
+		$(word 2,
+			$(subst :, ,$(FILE))
+		)
+	)
+)
+endef
+
+# add files that are not listed in links.txt
+define OUT_FILES +=
+$(strip
+	$(basename
+		$(subst _,-,
+			$(filter-out $(LINKED_FILES),
+				$(SRC_FILES)
+			)
+		)
+	)
+)
+endef
+
+# get output files and return corresponding source from links.txt
+GET_LINKED_SRC = $(firstword $(subst :, ,$(filter %:$1,$(file < links.txt))))
+
+# either get source name from links.txt or use subst on link's name
+define GET_SRC
+$(strip
+	$(if $(call GET_LINKED_SRC,$1),
+		$(call GET_LINKED_SRC,$1),
+		$(subst -,_,$1).py
+	)
+)
+endef
 
 all: install link
 
 install: requirements.txt
-	pip install -r $<
+	@$(PIP)
+	pip("install -r $<")
 
-link: $(out_files)
+link: $(OUT_FILES)
 
-unlink: | $(bin_dir)
-	rm -f $(out_files)
+unlink: | $(BIN_DIR)
+	@$(OS)
+	for file in "$(OUT_FILES)".split():
+	    link = os.path.join("$|", file)
+	    if os.path.lexists(link):
+	        os.unlink(link)
 
-$(bin_dir):
-	if test ! -d $(bin_dir); then \
-		mkdir $(bin_dir); \
-	fi
+$(BIN_DIR):
+	$(OS)
+	os.makedirs("$(BIN_DIR)")
 
-$(out_files):
-	ln -s $(join $(CURDIR)/, $(call name_src, $(notdir $@))) $@
+$(OUT_FILES):
+	@$(OS)
+	source = os.path.join("$(CURDIR)", "$(call GET_SRC,$@)")
+	target = os.path.join("$(BIN_DIR)", "$@")
+	if not os.path.lexists(target):
+	    os.symlink(source, target)
 
 .PHONY: all install link unlink
+
+.ONESHELL:
