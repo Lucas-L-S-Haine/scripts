@@ -101,8 +101,9 @@ $(BIN_DIR):
 
 $(OUT_FILES):
 	@$(OS)
-	source = os.path.join("$(CURDIR)", "$(call GET_SRC,$@)")
-	target = os.path.join("$(BIN_DIR)", "$@")
+	os.chdir("$(BIN_DIR)")
+	source = os.path.join("../src/python", "$(call GET_SRC,$@)")
+	target = "$@"
 	if not os.path.lexists(target):
 	    os.symlink(source, target)
 
