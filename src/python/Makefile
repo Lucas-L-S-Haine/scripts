@@ -81,18 +81,19 @@ $(strip
 )
 endef
 
+TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
+
 all: install link
 
 install: requirements.txt
 	@$(PIP)
 	pip("install -r $<")
 
-link: $(OUT_FILES)
+link: $(TARGET_FILES)
 
 unlink: | $(BIN_DIR)
 	@$(OS)
-	for file in "$(OUT_FILES)".split():
-	    link = os.path.join("$|", file)
+	for link in "$(TARGET_FILES)".split():
 	    if os.path.lexists(link):
 	        os.unlink(link)
 
@@ -100,13 +101,10 @@ $(BIN_DIR):
 	$(OS)
 	os.makedirs("$(BIN_DIR)")
 
-$(OUT_FILES):
+$(TARGET_FILES): | $(BIN_DIR)
 	@$(OS)
 	os.chdir("$(BIN_DIR)")
-	source = os.path.join("../src/python", "$(call GET_SRC,$@)")
-	target = "$@"
-	if not os.path.lexists(target):
-	    os.symlink(source, target)
+	os.symlink(f"../src/python/$(call GET_SRC,$(notdir $@))", "$(notdir $@)")
 
 .PHONY: all install link unlink
 
