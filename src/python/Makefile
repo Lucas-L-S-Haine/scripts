@@ -86,13 +86,13 @@ TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
 all: install link
 
 install: requirements.txt
-	@$(PIP)
+	$(PIP)
 	pip("install -r $<")
 
 link: $(TARGET_FILES)
 
 unlink: | $(BIN_DIR)
-	@$(OS)
+	$(OS)
 	for link in "$(TARGET_FILES)".split():
 	    if os.path.lexists(link):
 	        os.unlink(link)
@@ -102,10 +102,12 @@ $(BIN_DIR):
 	os.makedirs("$(BIN_DIR)")
 
 $(TARGET_FILES): | $(BIN_DIR)
-	@$(OS)
+	$(OS)
 	os.chdir("$(BIN_DIR)")
 	os.symlink("../src/python/$(call GET_SRC,$(notdir $@))", "$(notdir $@)")
 
 .PHONY: all install link unlink
+
+.SILENT: install unlink $(TARGET_FILES)
 
 .ONESHELL:
