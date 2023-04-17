@@ -76,7 +76,7 @@ define GET_SRC
 $(strip
 	$(if $(call GET_LINKED_SRC,$1),
 		$(call GET_LINKED_SRC,$1),
-		$(subst -,_,$1).py
+		$(subst -,_,$1)$(EXT)
 	)
 )
 endef
