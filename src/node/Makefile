@@ -117,6 +117,11 @@ all: link
 link: $(TARGET_FILES)
 
 unlink: | $(BIN_DIR)
+	for (const link of "$(TARGET_FILES)".split(/\s+/)) {
+		if (fs.existsSync(link)) {
+			fs.unlinkSync(link);
+		}
+	}
 
 $(BIN_DIR):
 	fs.mkdirSync(`$(BIN_DIR)`, { recursive: true, mode: 0o755 });
