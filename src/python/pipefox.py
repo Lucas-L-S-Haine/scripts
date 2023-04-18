@@ -37,7 +37,7 @@ should_read_from_tty = file_name == "-" or file_name is None
 extension = options["--format"]
 use_file_extension = not should_read_from_tty and len(file_name.split(".")) > 1
 
-if file_name[0] == ".":
+if file_name is not None and file_name[0] == ".":
     use_file_extension = False
 
 if extension is None and use_file_extension:
