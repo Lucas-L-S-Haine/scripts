@@ -1,29 +1,79 @@
-bin_dir := $(abspath $(CURDIR)/../../bin)
-ext := .sh
-src_files := $(wildcard *$(ext))
-links := $(shell cat links.txt)
+IS_EXEC = $(word 2,$(shell stat --format='%A %n' $1 | grep -E '^-r.x.{6}'))
 
-get_name = $(shell grep $(1) links.txt | cut -d : -f 2)
-rename = $(subst _,-,$(subst $(ext),,$(1)))
+BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
-name_out = $(if $(findstring $(1), $(links)), $(call get_name, $(1)), $(call rename, $(1)))
-name_src = $(if $(shell grep $(1) links.txt), $(shell grep $(1) links.txt | cut -d : -f 1), $(patsubst %,%$(ext),$(subst -,_,$(1))))
+EXT = .sh
 
-file_names = $(foreach file, $(src_files), $(call name_out, $(file)))
+define SRC_FILES
+$(strip
+	$(foreach FILE, $(wildcard *$(EXT)),
+		$(call IS_EXEC,$(FILE))
+	)
+)
+endef
 
-out_files = $(foreach file, $(file_names), $(bin_dir)/$(file))
+LINKS_TXT = $(file < links.txt)
 
-link: $(out_files)
+define LINKED_FILES
+$(strip
+	$(foreach FILE, $(LINKS_TXT),
+		$(firstword
+			$(subst :, ,$(FILE))
+		)
+	)
+)
+endef
 
-unlink: | $(bin_dir)
-	rm -f $(out_files)
+# create link names from links.txt
+define OUT_FILES :=
+$(strip
+	$(foreach FILE, $(LINKS_TXT),
+		$(word 2,
+			$(subst :, ,$(FILE))
+		)
+	)
+)
+endef
 
-$(bin_dir):
-	if test ! -d $(bin_dir); then \
-		mkdir $(bin_dir); \
-	fi
+# add files that are not listed in links.txt
+define OUT_FILES +=
+$(strip
+	$(basename
+		$(subst _,-,
+			$(filter-out $(LINKED_FILES),
+				$(SRC_FILES)
+			)
+		)
+	)
+)
+endef
 
-$(out_files):
-	ln -s $(join $(CURDIR)/, $(call name_src, $(notdir $@))) $@
+# get output files and return corresponding source from links.txt
+GET_LINKED_SRC = $(firstword $(subst :, ,$(filter %:$1,$(file < links.txt))))
+
+# either get source name from links.txt or use subst on link's name
+define GET_SRC
+$(strip
+	$(if $(call GET_LINKED_SRC,$1),
+		$(call GET_LINKED_SRC,$1),
+		$(subst -,_,$1)$(EXT)
+	)
+)
+endef
+
+TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
+
+link: $(TARGET_FILES)
+
+unlink: | $(BIN_DIR)
+	rm -f $(TARGET_FILES)
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+$(TARGET_FILES): | $(BIN_DIR)
+	cd $(BIN_DIR); ln -s "../src/sh/$(call GET_SRC,$(notdir $@))" $(notdir $@)
 
 .PHONY: link unlink
+
+.SILENT: unlink $(TARGET_FILES)
