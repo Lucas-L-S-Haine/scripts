@@ -18,7 +18,26 @@ BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
 EXT = %.js %.cjs %.mjs %.ts
 
-SRC_FILES = $(filter $(EXT), $(wildcard *))
+OK = fs.constants.R_OK + fs.constants.X_OK
+define IS_EXEC
+$(shell
+	try {
+		fs.accessSync("$1", $(OK));
+		console.log("$1");
+	} catch {
+		null;
+	}
+)
+endef
+
+define SRC_FILES :=
+$(strip
+	$(foreach FILE,
+		$(filter $(EXT), $(wildcard *)),
+		$(call IS_EXEC,$(FILE))
+	)
+)
+endef
 
 LINKS_TXT = $(file < links.txt)
 
