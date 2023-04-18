@@ -18,6 +18,7 @@ Options:
 """
 import os
 import sys
+import time
 import tempfile as tmp
 import subprocess as sp
 import io
@@ -51,12 +52,18 @@ try:
     if should_read_from_tty:
         file = sys.stdin
     else:
-        file = open(options["<file>"], mode="r")
+        file = open(file_name, mode="r")
 
-    with tmp.NamedTemporaryFile(suffix=f".{extension}") as tmp_file:
-        tmp_file.write(file.read().encode())
+    tmp_file = tmp.NamedTemporaryFile(suffix=f".{extension}", delete=False)
 
-        sp.run([browser, tmp_file.name], input=tmp_file.read())
+    tmp_file.write(file.read().encode())
+    tmp_file.flush()
+
+    proc = sp.Popen([browser, tmp_file.name], stdout=sp.DEVNULL,
+                    stderr=sp.DEVNULL, close_fds=True)
 
 finally:
     file.close()
+    tmp_file.close()
+    time.sleep(1.2)
+    os.unlink(tmp_file.name)
