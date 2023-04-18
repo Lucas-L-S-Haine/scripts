@@ -17,6 +17,7 @@ endef
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
 EXT = %.js %.cjs %.mjs %.ts
+JS_FILES := $(wildcard $(subst %,*,$(EXT)))
 
 OK = fs.constants.R_OK + fs.constants.X_OK
 define IS_EXEC
@@ -33,7 +34,7 @@ endef
 define SRC_FILES :=
 $(strip
 	$(foreach FILE,
-		$(filter $(EXT), $(wildcard *)),
+		$(filter $(EXT), $(JS_FILES)),
 		$(call IS_EXEC,$(FILE))
 	)
 )
@@ -91,11 +92,7 @@ GET_LINKED_SRC = $(firstword $(subst :, ,$(filter %:$1,$(file < links.txt))))
 define GET_FILE_NAME
 $(strip
 	$(filter $(subst -,_,$(notdir $1)).%,
-		$(filter $(EXT),
-			$(filter-out $(LINKED_FILES),
-				$(filter-out $(LINKED_FILES),$(wildcard *))
-			)
-		)
+		$(filter-out $(LINKED_FILES),$(JS_FILES))
 	)
 )
 endef
