@@ -119,12 +119,14 @@ link: $(TARGET_FILES)
 unlink: | $(BIN_DIR)
 
 $(BIN_DIR):
-	@fs.mkdirSync(`$(BIN_DIR)`, { recursive: true, mode: 0o755 });
+	fs.mkdirSync(`$(BIN_DIR)`, { recursive: true, mode: 0o755 });
 
 $(TARGET_FILES): | $(BIN_DIR)
-	@process.chdir(`$(BIN_DIR)`);
+	process.chdir(`$(BIN_DIR)`);
 	fs.symlinkSync("../src/node/$(call GET_SRC,$(notdir $@))", "$(notdir $@)");
 
 .PHONY: all link unlink
+
+.SILENT: unlink $(TARGET_FILES)
 
 .ONESHELL:
