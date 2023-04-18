@@ -114,10 +114,8 @@ TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
 
 all: link
 
-# create symbolic links at target directory
 link: $(TARGET_FILES)
 
-# remove symbolic links
 unlink: | $(BIN_DIR)
 
 $(BIN_DIR):
