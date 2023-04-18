@@ -75,16 +75,57 @@ $(strip
 )
 endef
 
+define CHECK_DUPLICATES
+$(foreach LINK,$(OUT_FILES),
+	$(intcmp 1,
+		$(words $(filter $(LINK),$(OUT_FILES))),
+		$(error There are two or more output files with the same name)
+	)
+)
+endef
+$(CHECK_DUPLICATES)
+
+# get output files and return corresponding source from links.txt
+GET_LINKED_SRC = $(firstword $(subst :, ,$(filter %:$1,$(file < links.txt))))
+
+define GET_FILE_NAME
+$(strip
+	$(filter $(subst -,_,$(notdir $1)).%,
+		$(filter $(EXT),
+			$(filter-out $(LINKED_FILES),
+				$(filter-out $(LINKED_FILES),$(wildcard *))
+			)
+		)
+	)
+)
+endef
+
+# either get source name from links.txt or use subst on link's name
+define GET_SRC
+$(strip
+	$(if $(call GET_LINKED_SRC,$1),
+		$(call GET_LINKED_SRC,$1),
+		$(call GET_FILE_NAME,$1)
+	)
+)
+endef
+
+TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
+
 all: link
 
 # create symbolic links at target directory
-link:
+link: $(TARGET_FILES)
 
 # remove symbolic links
-unlink:
+unlink: | $(BIN_DIR)
 
 $(BIN_DIR):
 	@fs.mkdirSync(`$(BIN_DIR)`, { recursive: true, mode: 0o755 });
+
+$(TARGET_FILES): | $(BIN_DIR)
+	@process.chdir(`$(BIN_DIR)`);
+	fs.symlinkSync("../src/node/$(call GET_SRC,$(notdir $@))", "$(notdir $@)");
 
 .PHONY: all link unlink
 
