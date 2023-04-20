@@ -104,7 +104,7 @@ $(BIN_DIR):
 $(TARGET_FILES): | $(BIN_DIR)
 	$(OS)
 	os.chdir("$(BIN_DIR)")
-	os.symlink("../src/python/$(call GET_SRC,$(notdir $@))", "$(notdir $@)")
+	os.symlink("../src/python/$(call GET_SRC,$(@F))", "$(@F)")
 
 .PHONY: all install link unlink
 

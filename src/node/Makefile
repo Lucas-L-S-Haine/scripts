@@ -125,7 +125,7 @@ $(BIN_DIR):
 
 $(TARGET_FILES): | $(BIN_DIR)
 	process.chdir(`$(BIN_DIR)`);
-	fs.symlinkSync("../src/node/$(call GET_SRC,$(notdir $@))", "$(notdir $@)");
+	fs.symlinkSync("../src/node/$(call GET_SRC,$(@F))", "$(@F)");
 
 .PHONY: all link unlink
 

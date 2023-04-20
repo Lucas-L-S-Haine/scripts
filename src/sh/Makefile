@@ -72,7 +72,7 @@ $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 $(TARGET_FILES): | $(BIN_DIR)
-	cd $(BIN_DIR); ln -s "../src/sh/$(call GET_SRC,$(notdir $@))" $(notdir $@)
+	cd $(BIN_DIR); ln -s "../src/sh/$(call GET_SRC,$(@F))" $(@F)
 
 .PHONY: link unlink
 
