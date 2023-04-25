@@ -5,9 +5,10 @@ const { _: classes, ...options } = require("minimist")(process.argv.slice(2));
 
 const dirname = basename(process.env.PWD);
 
-const packageName = options.package || options.p || dirname;
-const code = (packageName, className) =>
-  `package ${packageName};
+const packageName = options.package || options.p;
+const code = (packageName, className) => {
+  if (packageName) {
+    return `package ${packageName};
 
 public class ${className} {
 
@@ -15,6 +16,15 @@ public class ${className} {
 
     }
 }\n`;
+  }
+
+  return `public class ${className} {
+
+    public static void main(String[] args) {
+
+    }
+}\n`;
+}
 
 function handleClasses(err) {
   if (err) {
