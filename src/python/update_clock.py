@@ -39,10 +39,11 @@ def get_time():
     options = docopt(__doc__)
 
     if len(sys.argv[1:]) == 0:
-        datetime = request("head", "https://www.google.com").headers["date"]
+        with request("head", "https://www.google.com") as response:
+            datetime = response.headers["date"]
 
-        localtime = parse(datetime) + relativedelta(hours=-3)
-        time_str = f"{localtime.date()} {localtime.time()}"
+            localtime = parse(datetime) + relativedelta(hours=-3)
+            time_str = f"{localtime.date()} {localtime.time()}"
     elif len(sys.argv[1:]) == 1:
         time_str = options["<datetime>"]
     elif len(sys.argv[1:]) == 2:
