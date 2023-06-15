@@ -58,11 +58,7 @@ def main():
     try:
         time_str = get_time()
 
-        run(["doas", "-n", "timedatectl", "set-ntp", "false"])
-        time.sleep(1)
-        run(["doas", "-n", "timedatectl", "set-time", time_str])
-        time.sleep(1)
-        run(["doas", "-n", "timedatectl", "set-ntp", "true"])
+        run(["doas", "-n", "date", "--set", time_str])
     except Exception as error:
         summary = "Error: failed to update clock"
         body = str(error)
