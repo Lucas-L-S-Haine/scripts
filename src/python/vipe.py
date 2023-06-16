@@ -19,10 +19,8 @@ def get_editor():
     EDITOR = os.environ.get("EDITOR", "vi")
     VISUAL = os.environ.get("VISUAL", EDITOR)
 
-    if VISUAL.find("emacs") != -1 and EDITOR.find("emacs") == -1:
-        return f"emacsclient --tty --alternate-editor={EDITOR}"
-    elif VISUAL.find("emacs") != -1:
-        return "emacsclient --tty --alternate-editor=vi"
+    if VISUAL.find("emacs") != -1:
+        return f"emacsclient --create-frame --alternate-editor={EDITOR}"
 
     return VISUAL
 
