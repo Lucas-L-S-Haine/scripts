@@ -5,12 +5,7 @@ import tempfile
 from subprocess import run, check_output
 
 
-TTY_NAME = "/dev/" + check_output([
-    "ps",
-    "--pid",
-    f"{os.getppid()}",
-    "--format",
-    "tty"]).split()[-1].decode("utf-8")
+TTY_NAME = "/dev/tty"
 
 
 def get_editor():
