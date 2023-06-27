@@ -73,7 +73,6 @@ $(BIN_DIR):
 
 $(TARGET_FILES): | $(BIN_DIR)
 	ln -s ../src/awk/$(call GET_SRC,$(@F)) $@
-#	cd $(BIN_DIR); ln -s "../src/awk/$(call GET_SRC,$(@F))" $(@F)
 
 .PHONY: link unlink
 
