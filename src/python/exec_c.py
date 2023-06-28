@@ -3,10 +3,14 @@
 
 Usage:
     exec-c (-h | --help)
-    exec-c <src_file> [<args>]...
+    exec-c [-c <compiler> | --cc=<compiler> | --compiler=<compiler>]
+           [-f <flags> | --flags=<flags>]... <src_file> [<args>]...
 
 Options:
-    -h, --help  show this help message
+    -h, --help              show this help message
+    -c, --cc=<compiler>     choose a different compiler[default: gcc]
+    --compiler=<compiler>   alias for --cc
+    -f, --flags=<flags>     specify the compiler flags[default: -Wall -Wextra -Werror]
 
 Arguments:
     src_file    source code written in C
@@ -20,10 +24,14 @@ import tempfile as tmp
 from docopt import docopt
 
 
-CC = "gcc"
-CFLAGS = ["-Wall", "-Wextra", "-Werror"]
-
 options = docopt(__doc__)
+if options["--compiler"] is None:
+    options["--compiler"] = options["--cc"]
+else:
+    options["--cc"] = options["--compiler"]
+
+CC = options["--compiler"]
+CFLAGS = list(set(options["--flags"]))
 
 src_file = options["<src_file>"]
 argv = options["<args>"]
