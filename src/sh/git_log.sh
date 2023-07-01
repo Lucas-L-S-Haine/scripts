@@ -8,7 +8,7 @@ git_log() {
 }
 
 if test -t 1; then
-	git_log | ./format_color.awk | ${PAGER}
+	git_log | format-color | ${PAGER}
 else
-	git_log | ./format_nocolor.awk
+	git_log | format-nocolor
 fi
