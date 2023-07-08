@@ -11,14 +11,31 @@ urgency() {
   fi
 }
 
+get_volume() {
+  if (type pulsemixer > /dev/null 2>&1); then
+    pulsemixer --get-volume
+  else
+    amixer get Master | awk '/[0-9]+%/ {printf "%s ", $5}'
+  fi
+}
+
+set_volume() {
+  if (type pulsemixer > /dev/null 2>&1); then
+    pulsemixer --change-volume $1
+  else
+    local volume="$(echo $1 | sed -E 's/^([+-])([0-9]+)/\2%\1/')"
+    amixer set Master ${volume} unmute > /dev/null 2>&1
+  fi
+}
+
 if test "$1" = increase; then
-  amixer set Master "${2:-2}"%+ unmute
-  dunstify volume "$(amixer get Master | awk '/[0-9]+%/ {print $5}')" \
-    --replace=1 --timeout=2100 -u "$(urgency)"
+  volume=$(echo $2 | sed 's/\([0-9]\+\)/+\1/')
+  set_volume ${volume}
+  dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
 elif test "$1" = decrease; then
-  amixer set Master "${2:-2}"%- unmute
-  dunstify volume "$(amixer get Master | awk '/[0-9]+%/ {print $5}')" \
-    --replace=1 --timeout=2100 -u "$(urgency)"
+  volume=$(echo $2 | sed 's/\([0-9]\+\)/-\1/')
+  set_volume ${volume}
+  dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
 elif test -z "$1"; then
-  amixer get Master | grep -oE "[0-9]+%"
+  get_volume
 fi
