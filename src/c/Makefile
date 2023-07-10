@@ -11,7 +11,7 @@ SRC_LIBS := $(wildcard lib/*$(EXT))
 
 TARGET_FILES := $(patsubst %.c,$(BIN_DIR)/%,$(SRC_FILES))
 TARGET_LIBS := $(patsubst lib/%.c,$(LIB_DIR)/%.o,$(SRC_LIBS))
-EXTRA_FILES := run
+EXTRA_FILES := xinitrc
 EXTRA := $(patsubst %,$(BIN_DIR)/%,$(EXTRA_FILES))
 
 link: $(TARGET_LIBS) $(TARGET_FILES) $(EXTRA)
@@ -31,7 +31,7 @@ $(BIN_DIR):
 $(LIB_DIR):
 	mkdir -p $@
 
-$(BIN_DIR)/run: $(LIB_DIR)/main.o $(LIB_DIR)/run.o
+$(BIN_DIR)/xinitrc: $(LIB_DIR)/main.o $(LIB_DIR)/run.o
 	@$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: link unlink
