@@ -1,4 +1,4 @@
-#include "lib/run.h"
+#include "run.h"
 #include <stdio.h>
 #include <sys/wait.h>
 
