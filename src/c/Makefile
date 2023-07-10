@@ -2,72 +2,37 @@ CC := gcc
 CFLAGS := -Wall -Wextra -Werror
 
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
+LIB_DIR := $(abspath $(CURDIR)/../../lib)
 
 EXT := .c
 
 SRC_FILES := $(wildcard *$(EXT))
+SRC_LIBS := $(wildcard lib/*$(EXT))
 
-LINKS_TXT := $(file < links.txt)
+TARGET_FILES := $(patsubst %.c,$(BIN_DIR)/%,$(SRC_FILES))
+TARGET_LIBS := $(patsubst lib/%.c,$(LIB_DIR)/%.o,$(SRC_LIBS))
+EXTRA_FILES := run
+EXTRA := $(patsubst %,$(BIN_DIR)/%,$(EXTRA_FILES))
 
-define LINKED_FILES
-$(strip
-	$(foreach FILE, $(LINKS_TXT),
-		$(firstword
-			$(subst :, ,$(FILE))
-		)
-	)
-)
-endef
-
-# create link names from links.txt
-define OUT_FILES :=
-$(strip
-	$(foreach FILE, $(LINKS_TXT),
-		$(word 2,
-			$(subst :, ,$(FILE))
-		)
-	)
-)
-endef
-
-# add files that are not listed in links.txt
-define OUT_FILES +=
-$(strip
-	$(basename
-		$(subst _,-,
-			$(filter-out $(LINKED_FILES),
-				$(SRC_FILES)
-			)
-		)
-	)
-)
-endef
-
-# get output files and return corresponding source from links.txt
-GET_LINKED_SRC = $(firstword $(subst :, ,$(filter %:$1,$(file < links.txt))))
-
-# either get source name from links.txt or use subst on link's name
-define GET_SRC
-$(strip
-	$(if $(call GET_LINKED_SRC,$1),
-		$(call GET_LINKED_SRC,$1),
-		$(subst -,_,$1)$(EXT)
-	)
-)
-endef
-
-TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
-
-link: $(TARGET_FILES)
+link: $(TARGET_LIBS) $(TARGET_FILES) $(EXTRA)
 
 unlink: | $(BIN_DIR)
-	rm -f $(TARGET_FILES)
+	rm -f $(TARGET_FILES) $(TARGET_LIBS) $(EXTRA)
+
+$(BIN_DIR)/%: %.c | $(BIN_DIR)
+	@$(CC) $(CFLAGS) -o $@ $<
+
+$(LIB_DIR)/%.o: lib/%.c | $(LIB_DIR)
+	@$(CC) $(CFLAGS) -o $@ -c $<
 
 $(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+	mkdir -p $@
 
-$(TARGET_FILES): | $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $@ $(call GET_SRC,$(@F))
+$(LIB_DIR):
+	mkdir -p $@
+
+$(BIN_DIR)/run: $(LIB_DIR)/main.o $(LIB_DIR)/run.o
+	@$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: link unlink
 
