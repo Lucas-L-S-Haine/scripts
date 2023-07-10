@@ -1,5 +1,6 @@
 node_modules/
 bin/
+lib/
 .venv/
 __pycache__/
 links.txt
