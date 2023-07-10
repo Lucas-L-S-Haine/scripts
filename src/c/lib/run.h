@@ -1,8 +1,9 @@
 #ifndef RUNFG_H
 #define RUNFG_H
+#include <sys/types.h>
 
-int runbg(char *command, char *argv[]);
+pid_t runbg(char *command, char *argv[]);
 
-int runfg(char *command, char *argv[], int *status_ptr);
+pid_t runfg(char *command, char *argv[], int *status_ptr);
 
 #endif

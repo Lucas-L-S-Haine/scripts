@@ -5,7 +5,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-int runbg(char *command, char *argv[]) {
+pid_t runbg(char *command, char *argv[]) {
 	pid_t child_pid = fork();
 
 	if (child_pid == 0) {
@@ -20,7 +20,7 @@ int runbg(char *command, char *argv[]) {
 	return child_pid;
 }
 
-int runfg(char *command, char *argv[], int *status_ptr) {
+pid_t runfg(char *command, char *argv[], int *status_ptr) {
 	pid_t child_pid = fork();
 
 	if (child_pid == 0) {
