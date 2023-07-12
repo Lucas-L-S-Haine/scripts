@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <signal.h>
 
+int kill(pid_t PID, int SIGNUM);
+
 int main() {
 	char *picom[] = {"picom", NULL}; runbg("picom", picom);
 	char *setxkbmap[] = {"setxkbmap", NULL}; runbg("setxkbmap", setxkbmap);
