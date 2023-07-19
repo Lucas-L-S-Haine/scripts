@@ -25,19 +25,6 @@ void show_help(void) {
 	printf("%s", help_msg);
 }
 
-/*
-if test $(tty) = /dev/tty2; then
-	dwm &
-	dwm_pid=$!
-
-	wait ${dwm_pid}
-
-	kill -1 ${FISH_PID}
-else
-	exec dwm
-fi
-*/
-
 pid_t runfg(char *command, char *argv[], int *status_ptr) {
 	pid_t child_pid = fork();
 
