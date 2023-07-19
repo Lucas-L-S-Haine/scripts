@@ -6,8 +6,11 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
+#define NO_SESSION 1
+#define INVALID_OPTION 2
+#define EXEC_FAIL 10
+
 int getopt(int ARGC, char *const *ARGV, const char *OPTIONS);
-int optopt;
 int optind;
 char *optarg;
 
@@ -55,15 +58,28 @@ pid_t runfg(char *command, char *argv[], int *status_ptr) {
 void start_session(char *command, char *args[], pid_t login_shell_pid) {
 	int status;
 	runfg(command, args, &status);
-	if (status != 0)
-		exit(status);
+
+	if (WIFEXITED(status)) {
+		int exit_status = WEXITSTATUS(status);
+		if (exit_status != 0)
+			exit(exit_status);
+	}
+
 	kill(login_shell_pid, SIGHUP);
+}
+
+void print_array(char *array[], char *name, int size) {
+	printf("%s: {", name);
+	for (int index = 0; index < size - 1; index++)
+		printf("\"%s\", ", array[index]);
+	printf("\"%s\"}\n", array[size - 1]);
 }
 
 int main(int argc, char *argv[]) {
 	char *command;
 	int c;
 	pid_t login_shell_pid;
+	int args_size;
 	while ((c = getopt(argc, argv, "hp:")) != -1) {
 		switch (c) {
 			case 'h':
@@ -71,61 +87,44 @@ int main(int argc, char *argv[]) {
 				return 0;
 			case 'p':
 				login_shell_pid = atoi(optarg);
-				printf("%d\n", login_shell_pid);
-
 				command = argv[optind];
+				args_size = argc - optind;
 
-				//char *args[argc - optind]; // TODO: fix this
 				if (command == NULL) {
 					fprintf(stderr, "You didn't choose a session.\n");
-					return 1;
+					return NO_SESSION;
 				} else {
-					for (int index = optind; index < argc; index++) {
+					char *args[args_size + 1];
+					for (int index = optind; index < argc; index++)
 						args[index - optind] = argv[index];
-					}
-
-					printf("You chose ");
-					for (int index = optind; index < argc - 1; index++) {
-						printf("%s ", argv[index]);
-					}
-					printf("%s\n", argv[argc - 1]);
+					args[args_size] = NULL;
+					start_session(command, args, login_shell_pid);
 				}
-				printf("%d - %d = %d\n", argc, optind, argc - optind);
-				return 1;
+				return 0;
 			case '?':
-				fprintf(stderr, "the option %d is not recognized",
-						optopt);
 				show_help();
-				return 1;
+				return INVALID_OPTION;
 			default:
 				abort();
 		}
 	}
 
-	char *session;
-	session = argv[optind];
+	command = argv[optind];
 
-	if (session == NULL) {
+	if (command == NULL) {
 		fprintf(stderr, "You didn't choose a session.\n");
-		return 1;
-	} else {
-		printf("You chose ");
-		for (int index = optind; index < argc - 1; index++) {
-			printf("%s ", argv[index]);
-		}
-		printf("%s\n", argv[argc - 1]);
+		return NO_SESSION;
 	}
 
-	printf("%d - %d = %d\n", argc, optind, argc - optind);
+	args_size = argc - optind;
 
-	/*
-	printf("Chosen session: ");
-	for (int index = optind; index < argc; index++) {
-		printf("%s ", argv[index]);
-	}
-	printf("\n");
-	printf("argc: %d\noptind: %d\n", argc, optind);
-	*/
+	char *args[args_size + 1];
+	for (int index = optind; index < argc; index++)
+		args[index - optind] = argv[index];
+	args[args_size] = NULL;
 
-	return 0;
+	execvp(command, args);
+
+	fprintf(stderr, "Error: failed to execute %s\n", command);
+	return EXEC_FAIL;
 }
