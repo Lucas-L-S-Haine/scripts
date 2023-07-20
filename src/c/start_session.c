@@ -21,7 +21,26 @@ void show_help(void) {
 		"start-session - a wrapper for executing your window manager from .xinitrc\n"
 		"\nUsage:\n"
 		"\tstart-session -h\n"
-		"\tstart-session WINDOW_MANAGER [ARGS]...\n";
+		"\tstart-session WINDOW_MANAGER [ARGS]...\n"
+		"\tstart-session -p LOGIN_SHELL_PID WINDOW_MANAGER [ARGS]...\n"
+		"\nOptions:\n"
+		"\t-h\n"
+		"\t\tShow this help message and exit.\n"
+		"\t-p LOGIN_SHELL_PID\n"
+		"\t\tRun the window manager as a child process, wait for its\n"
+		"\t\tcompletion, then send a SIGHUP to LOGIN_SHELL_PID.\n"
+		"\nDescription:\n"
+		"\tstart-session takes a window manager as an argument and executes it."
+		"\n\tWith the -p option, it takes the pid of the login shell, runs the"
+		"\n\twindow manager as a child process in the foreground, then sends the"
+		"\n\tlogin shell a SIGHUP after the window manager exits. That way, the"
+		"\n\tuser is sent back to the login screen on the tty. This program is"
+		"\n\tmeant to be exec'd from .xinitrc.\n"
+		"\nExamples:\n"
+		"\t1. exec start-session spectrwm\n"
+		"\t2. if $(tty) = /dev/tty1; then\n"
+		"\t       exec start-session -p ${BASH_PID} dwm\n"
+		"\t   fi\n";
 	printf("%s", help_msg);
 }
 
