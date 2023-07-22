@@ -71,7 +71,8 @@ void start_session(char *command, char *args[], pid_t login_shell_pid) {
 			exit(exit_status);
 	}
 
-	kill(login_shell_pid, SIGHUP);
+	if (login_shell_pid != NULL)
+		kill(login_shell_pid, SIGHUP);
 }
 
 void print_array(char *array[], char *name, int size) {
