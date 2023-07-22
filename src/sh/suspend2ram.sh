@@ -4,6 +4,12 @@ if test "$(id -u)" -ne 0; then
   exit 1
 fi
 
+# Set the DPMS timeout to 5 seconds
+xset dpms 5 5 5
+
+# Turn off the display
+xset dpms force off
+
 # Suspend the system
 echo mem > /sys/power/state
 
@@ -28,7 +34,7 @@ else
 fi
 
 # Wait for processes to handle SIGTERM
-sleep 5
+sleep 6
 
 # Send SIGKILL to remaining processes
 if test -n "${DOAS_USER}"; then
