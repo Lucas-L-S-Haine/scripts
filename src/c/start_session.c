@@ -71,7 +71,7 @@ void start_session(char *command, char *args[], pid_t login_shell_pid) {
 			exit(exit_status);
 	}
 
-	if (login_shell_pid != NULL)
+	if (login_shell_pid != 0)
 		kill(login_shell_pid, SIGHUP);
 }
 
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 		args[index - optind] = argv[index];
 	args[args_size] = NULL;
 
-	start_session(command, args, NULL);
+	start_session(command, args, 0);
 
 	fprintf(stderr, "Error: failed to execute %s\n", command);
 	return EXEC_FAIL;
