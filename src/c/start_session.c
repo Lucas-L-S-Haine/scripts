@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 		args[index - optind] = argv[index];
 	args[args_size] = NULL;
 
-	execvp(command, args);
+	start_session(command, args, NULL);
 
 	fprintf(stderr, "Error: failed to execute %s\n", command);
 	return EXEC_FAIL;
