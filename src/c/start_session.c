@@ -38,7 +38,7 @@ void show_help(void) {
 		"\n\tmeant to be exec'd from .xinitrc.\n"
 		"\nExamples:\n"
 		"\t1. exec start-session spectrwm\n"
-		"\t2. if $(tty) = /dev/tty1; then\n"
+		"\t2. if test $(tty) = /dev/tty1; then\n"
 		"\t       exec start-session -p ${BASH_PID} dwm\n"
 		"\t   fi\n";
 	printf("%s", help_msg);
