@@ -4,7 +4,7 @@ littler_link := ${HOME}/.local/bin/r
 bin_dir := $(abspath $(CURDIR)/../../bin)
 ext := .R
 src_files := $(wildcard *$(ext))
-links := $(shell cat links.txt)
+links := $(file < links.txt)
 
 get_name = $(shell grep $(1) links.txt | cut -d : -f 2)
 rename = $(subst _,-,$(subst $(ext),,$(1)))
@@ -19,9 +19,9 @@ out_files = $(foreach file, $(file_names), $(bin_dir)/$(file))
 all: install link
 
 install:
-	jetpack install
+	if ! jetpack check; then jetpack install; fi
 
-link: $(out_files) $(littler_link)
+link: install $(out_files) $(littler_link)
 
 unlink: | $(bin_dir)
 	rm -f $(out_files) $(littler_link)
@@ -29,7 +29,7 @@ unlink: | $(bin_dir)
 lint:
 	Rscript -e 'lintr::lint_dir()' >&2
 
-r: $(littler_link)
+r: install $(littler_link)
 
 $(bin_dir):
 	if test ! -d $(bin_dir); then \
