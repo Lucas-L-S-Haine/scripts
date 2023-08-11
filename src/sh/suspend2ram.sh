@@ -1,9 +1,10 @@
 #!/bin/sh
-exec 2> /var/log/suspend2ram.log
 if test "$(id -u)" -ne 0; then
   printf 'This command is supposed to be run as root\n' >&2
   exit 1
 fi
+
+exec 2> /var/log/suspend2ram.log
 
 # Set the DPMS timeout to 5 seconds
 xset dpms 5 5 5
