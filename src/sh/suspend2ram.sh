@@ -4,13 +4,26 @@ if test "$(id -u)" -ne 0; then
   exit 1
 fi
 
-exec 2> /var/log/suspend2ram.log
+LOG_FILE="/var/log/suspend2ram.log"
+> "${LOG_FILE}"
+exec 2> "${LOG_FILE}"
+
+if test -n "${DOAS_USER}"; then
+  USER=${DOAS_USER}
+elif test -n "${SUDO_USER}"; then
+  USER=${SUDO_USER}
+elif test -n $1; then
+  USER=$1
+else
+  printf 'Unable to determine the target user\n' >&2
+  exit 2
+fi
 
 # Set the DPMS timeout to 5 seconds
-xset dpms 5 5 5
+runuser -u ${USER} xset dpms 5 5 5
 
 # Turn off the display
-xset dpms force off
+runuser -u ${USER} xset dpms force off
 
 # Suspend the system
 echo mem > /sys/power/state
@@ -26,21 +39,10 @@ sleep 3
 # Logout the user and return to the login screen
 
 # Send SIGTERM to user processes
-if test -n "${DOAS_USER}"; then
-  killall -SIGTERM -u "${DOAS_USER}"
-elif test -n "${SUDO_USER}"; then
-  killall -SIGTERM -u "${SUDO_USER}"
-else
-  printf 'Unable to determine the target user\n' >&2
-  exit 2
-fi
+killall -SIGTERM -u ${USER}
 
 # Wait for processes to handle SIGTERM
 sleep 6
 
 # Send SIGKILL to remaining processes
-if test -n "${DOAS_USER}"; then
-  killall -SIGKILL -u "${DOAS_USER}"
-elif test -n "${SUDO_USER}"; then
-  killall -SIGKILL -u "${SUDO_USER}"
-fi
+killall -SIGKILL -u ${USER}
