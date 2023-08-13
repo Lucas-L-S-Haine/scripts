@@ -15,9 +15,9 @@ $(bin_dir):
 		mkdir $(bin_dir); \
 	fi
 
-$(out_files): build
-	if test $@ -ot $(call name_src, $@); \
-		then cp target/release/$(notdir $@) $@; \
+$(bin_dir)/%: build
+	if test $@ -ot $(call name_src, $@) -o ! -e $@; then \
+		cp target/release/$(notdir $@) $@; \
 	fi
 
 build:
