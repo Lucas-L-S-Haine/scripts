@@ -28,3 +28,7 @@ path = "show_clock_icon.rs"
 [[bin]]
 name = "get-language"
 path = "get_language.rs"
+
+[[bin]]
+name = "read-csv"
+path = "read_csv.rs"
