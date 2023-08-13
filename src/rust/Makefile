@@ -3,7 +3,7 @@ bin_dir := $(abspath ../../bin)
 src_files := $(wildcard *.rs)
 out_files := $(subst _,-,$(patsubst %.rs,$(bin_dir)/%,$(src_files)))
 
-name_src = $(patsubst %,%.rs,$(subst -,_,$(notdir $(1))))
+name_src = $(patsubst %,%.rs,$(subst -,_,$(notdir $1)))
 
 link: $(out_files) | $(bin_dir)
 
