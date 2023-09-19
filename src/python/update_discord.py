@@ -57,8 +57,8 @@ def main():
     if current_version >= newest_file_version:
         print("Discord is already in its newest version.")
         return 0
-    else:
-        os.rename("Discord", "OldDiscord")
+
+    os.rename("Discord", "OldDiscord")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         with tarfile.open(newest_file, mode="r:gz") as tarball:
