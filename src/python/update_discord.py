@@ -13,7 +13,7 @@ from bumpline.version import Version
 
 HOME = os.environ["HOME"]
 TARGET_DIR = f"{HOME}/Downloads/tar"
-DISCORD_RE = re.compile("discord.+tar\.gz")
+DISCORD_RE = re.compile(r"discord.+tar\.gz")
 
 
 def is_discord_tarball(filename: str) -> bool:
