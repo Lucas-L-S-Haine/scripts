@@ -73,7 +73,12 @@ def main():
 
     if not os.path.exists(f"{HOME}/.local/bin/discord"):
         discord_bin = os.path.join(TARGET_DIR, "Discord/Discord")
-        os.symlink(discord_bin, f"{HOME}/.local/bin/discord")
+        destination = f"{HOME}/.local/bin/discord"
+        os.symlink(discord_bin, destination)
+        print("Symbolic link created at: {destination}")
+
+    print("Discord updated from version %s to version %s" %
+          (current_version, newest_file_version))
 
     return 0
 
