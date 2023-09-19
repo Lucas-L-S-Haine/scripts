@@ -33,7 +33,7 @@ def get_discord_version(discord_dir):
 
 
 def get_version_from_name(filename):
-    match = re.search(r'-(\d+\.\d+\.\d+)', filename)
+    match = re.search(r"-(\d+\.\d+\.\d+)", filename)
 
     if match:
         version_number = match.group(1)
