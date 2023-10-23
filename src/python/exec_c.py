@@ -36,8 +36,8 @@ def separate_arguments(argv):
 def print_help():
     """Print help message."""
     message = f"""Usage:
-    {sys.argv[0]} (-h | --help)
-    {sys.argv[0]} [-c <compiler> | --cc=<compiler> | --compiler=<compiler>]
+    {os.path.basename(sys.argv[0])} (-h | --help)
+    {os.path.basename(sys.argv[0])} [-c <compiler> | --cc=<compiler> | --compiler=<compiler>]
            [-f <flags> | --flags=<flags>]... <src_file>... [--] [<arg>]...
 
 Options:
