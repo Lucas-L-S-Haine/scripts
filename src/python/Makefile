@@ -1,28 +1,11 @@
-SHELL       := /usr/bin/python3
-.SHELLFLAGS := -c
-
-# turn $(MAKE) into a namespace for the "make" function
-define MAKE :=
-	from subprocess import run as _run
-	def make(args: str):
-		_run(["$(MAKE)", *args.split()])
-endef
-
-define PIP :=
-	from sys import executable as python
-	from subprocess import run as _run
-	def pip(args: str):
-		_run([python, "-m", "pip", *args.split()])
-endef
-
-OS := import os
-
-OK = os.R_OK + os.X_OK
-IS_EXEC = $(shell $(OS); print("$1") if os.access("$1", $(OK)) else None)
-
-BIN_DIR := $(abspath $(CURDIR)/../../bin)
+PYTHON = $(CURDIR)/.venv/bin/python3
+PIP    = $(PYTHON) -m pip
 
 EXT = .py
+
+IS_EXEC = $(shell if stat -c '%a' $1 | grep -qE '^[57]'; then echo $1; fi)
+
+BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
 define SRC_FILES
 $(strip
@@ -86,27 +69,19 @@ TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
 all: install link
 
 install: requirements.txt
-	$(PIP)
-	pip("install -r $<")
+	$(PIP) install -r $<
 
 link: $(TARGET_FILES)
 
 unlink: | $(BIN_DIR)
-	$(OS)
-	for link in "$(TARGET_FILES)".split():
-	    if os.path.lexists(link):
-	        os.unlink(link)
+	rm -f $(TARGET_FILES)
 
 $(BIN_DIR):
-	$(OS)
-	os.makedirs("$(BIN_DIR)")
+	mkdir -p $@
 
 $(TARGET_FILES): | $(BIN_DIR)
-	$(OS)
-	os.symlink("../src/python/$(call GET_SRC,$(@F))", "$@")
+	ln -s "../src/python/$(call GET_SRC,$(@F))" $@
 
 .PHONY: all install link unlink
 
 .SILENT: install unlink $(TARGET_FILES)
-
-.ONESHELL:
