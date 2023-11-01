@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """update_clock.py - This script updates the system clock
 
 Usage:

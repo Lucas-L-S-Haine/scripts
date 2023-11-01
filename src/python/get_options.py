@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """argparse tutorial: https://docs.python.org/3/howto/argparse.html"""
 import argparse
 

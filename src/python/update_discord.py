@@ -1,4 +1,3 @@
-#!/home/lucas/.repos/scripts/src/python/.venv/bin/python
 import os
 import os.path
 import re

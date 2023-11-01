@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Compile one or more C source code files into a temporary binary file and
 execute it immediately.
 

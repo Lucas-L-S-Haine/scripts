@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Pipefox - A simple script to pipe html into your browser
 
 Usage:
