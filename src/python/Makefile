@@ -8,7 +8,7 @@ MAKEFLAGS := -j -Orecurse
 
 EXT = .py
 
-IS_EXEC = $(shell if stat -c '%a' $1 | grep -qE '^[57]'; then echo $1; fi)
+IS_EXEC = $(shell if stat -c '%a' $1 | grep -qE '^[4-7]'; then echo $1; fi)
 
 BIN_DIR := $(abspath $(CURDIR)/../../bin)
 
