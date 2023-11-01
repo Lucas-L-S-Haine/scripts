@@ -1,5 +1,10 @@
-PYTHON = $(CURDIR)/.venv/bin/python3
-PIP    = $(PYTHON) -m pip
+PYTHON = python3
+VENV   = $(CURDIR)/.venv
+PIP    = $(VENV)/bin/$(PYTHON) -m pip
+
+CC = cc
+
+MAKEFLAGS := -j -Orecurse
 
 EXT = .py
 
@@ -79,8 +84,15 @@ unlink: | $(BIN_DIR)
 $(BIN_DIR):
 	mkdir -p $@
 
-$(TARGET_FILES): | $(BIN_DIR)
-	ln -s "../src/python/$(call GET_SRC,$(@F))" $@
+$(VENV): requirements.txt
+	if test ! -d $(VENV); then $(PYTHON) -m venv $(VENV); fi
+	$(PIP) install --upgrade pip
+	$(PIP) install --upgrade -r $<
+	touch $(VENV)
+
+$(TARGET_FILES): | $(BIN_DIR) $(VENV)
+	$(CC) -o $@ -DPYTHON=\"$(abspath .venv/bin/python3)\" -DSCRIPT=\"$(call GET_SRC,$(@F))\" use_python_from_venv.c
+#	ln -s "../src/python/$(call GET_SRC,$(@F))" $@
 
 .PHONY: all install link unlink
 
