@@ -90,8 +90,9 @@ $(VENV): requirements.txt
 	$(PIP) install --upgrade -r $<
 	touch $(VENV)
 
-$(TARGET_FILES): | $(BIN_DIR) $(VENV)
-	$(CC) -o $@ -DPYTHON=\"$(abspath .venv/bin/python3)\" -DSCRIPT=\"$(call GET_SRC,$(@F))\" use_python_from_venv.c
+$(TARGET_FILES): use_python_from_venv.c | $(BIN_DIR) $(VENV)
+	$(CC) -o $@ -DPYTHON=\"$(abspath .venv/bin/python3)\"\
+		-DSCRIPT=\"$(abspath $(call GET_SRC,$(@F)))\" $<
 
 .PHONY: all install link unlink
 
