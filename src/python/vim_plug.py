@@ -82,7 +82,7 @@ def main():
     try:
         response = request("GET", "%s/master/plug.vim" % (BASE_URL),
                            allow_redirects=True, timeout=4)
-        write_file(response, options)
+        write_file(response.text, options)
     except FileExistsError as e:
         print("Error: file %s already exists" % e.filename, file=sys.stderr)
 
