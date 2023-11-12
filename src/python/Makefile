@@ -73,8 +73,7 @@ TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
 
 all: install link
 
-install: requirements.txt
-	$(PIP) install -r $<
+install: $(VENV)
 
 link: $(TARGET_FILES)
 
@@ -85,14 +84,18 @@ $(BIN_DIR):
 	mkdir -p $@
 
 $(VENV): requirements.txt
-	if test ! -d $(VENV); then $(PYTHON) -m venv $(VENV); fi
-	$(PIP) install --upgrade pip
-	$(PIP) install --upgrade -r $<
-	touch $(VENV)
+	if test ! -d "$@"; then \
+		$(PYTHON) -m venv "$@"; \
+		$(PIP) install --upgrade pip; \
+		$(PIP) install --upgrade -r $<; \
+	fi
+	touch "$@"
 
-$(TARGET_FILES): use_python_from_venv.c | $(BIN_DIR) $(VENV)
-	$(CC) -o $@ -DPYTHON=\"$(abspath .venv/bin/python3)\"\
-		-DSCRIPT=\"$(abspath $(call GET_SRC,$(@F)))\" $<
+$(TARGET_FILES): | $(BIN_DIR) $(VENV)
+	touch "$@"
+	chmod 755 "$@"
+	printf '#!%s\n' $(abspath .venv/bin/python3) > "$@"
+	cat < "$(call GET_SRC,$(@F))" >> "$@"
 
 .PHONY: all install link unlink
 
