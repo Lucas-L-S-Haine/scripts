@@ -53,6 +53,12 @@ def main():
     current_version = get_discord_version("Discord")
     newest_file_version = get_version_from_name(newest_file)
 
+    if not os.path.exists(f"{HOME}/.local/bin/discord"):
+        discord_bin = os.path.join(TARGET_DIR, "Discord/Discord")
+        destination = f"{HOME}/.local/bin/discord"
+        os.symlink(discord_bin, destination)
+        print("Symbolic link created at: {destination}")
+
     if current_version >= newest_file_version:
         print("Discord is already in its newest version.")
         return 0
@@ -69,12 +75,6 @@ def main():
                 print("Error: cannot extract files from tarball",
                       file=sys.stderr)
                 return 1
-
-    if not os.path.exists(f"{HOME}/.local/bin/discord"):
-        discord_bin = os.path.join(TARGET_DIR, "Discord/Discord")
-        destination = f"{HOME}/.local/bin/discord"
-        os.symlink(discord_bin, destination)
-        print("Symbolic link created at: {destination}")
 
     print("Discord updated from version %s to version %s" %
           (current_version, newest_file_version))
