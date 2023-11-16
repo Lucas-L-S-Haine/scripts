@@ -9,7 +9,7 @@ EXT := .c
 SRC_FILES := $(wildcard *$(EXT))
 SRC_LIBS := $(wildcard lib/*$(EXT))
 
-TARGET_FILES := $(patsubst %.c,$(BIN_DIR)/%,$(SRC_FILES))
+TARGET_FILES := $(SRC_FILES:%.c=$(BIN_DIR)/%)
 TARGET_LIBS := $(patsubst lib/%.c,$(LIB_DIR)/%.o,$(SRC_LIBS))
 EXTRA_FILES := xinitrc
 EXTRA := $(patsubst %,$(BIN_DIR)/%,$(EXTRA_FILES))
