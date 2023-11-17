@@ -53,28 +53,37 @@ def main():
     current_version = get_discord_version("Discord")
     newest_file_version = get_version_from_name(newest_file)
 
-    if not os.path.exists(f"{HOME}/.local/bin/discord"):
+    if not os.path.islink(f"{HOME}/.local/bin/discord"):
         discord_bin = os.path.join(TARGET_DIR, "Discord/Discord")
         destination = f"{HOME}/.local/bin/discord"
-        os.symlink(discord_bin, destination)
+        try:
+            os.symlink(discord_bin, destination)
+        except FileExistsError as err:
+            print("Error: cannot create symbolic link at %s" %
+                  (destination), file=sys.stderr)
+            print("File %s already exists" % (err.filename2), file=sys.stderr)
+            return err.errno
         print("Symbolic link created at: {destination}")
 
     if current_version >= newest_file_version:
         print("Discord is already in its newest version.")
         return 0
 
-    os.rename("Discord", "OldDiscord")
+    if os.path.exists("Discord"):
+        os.rename("Discord", "OldDiscord")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         with tarfile.open(newest_file, mode="r:gz") as tarball:
             try:
                 tarball.extractall()
-                shutil.move("OldDiscord", tmpdir)
-            except tarfile.ExtractError:
-                os.rename("OldDiscord", "Discord")
+                if os.path.exists("OldDiscord"):
+                    shutil.move("OldDiscord", tmpdir)
+            except tarfile.ExtractError as err:
+                if os.path.exists("OldDiscord"):
+                    os.rename("OldDiscord", "Discord")
                 print("Error: cannot extract files from tarball",
                       file=sys.stderr)
-                return 1
+                return err.errno
 
     print("Discord updated from version %s to version %s" %
           (current_version, newest_file_version))
