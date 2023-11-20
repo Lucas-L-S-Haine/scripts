@@ -92,10 +92,9 @@ $(VENV): requirements.txt
 	touch "$@"
 
 $(TARGET_FILES): | $(BIN_DIR) $(VENV)
-	touch "$@"
-	chmod 755 "$@"
 	printf '#!%s\n' $(abspath .venv/bin/python3) > "$@"
 	cat < "$(call GET_SRC,$(@F))" >> "$@"
+	chmod 755 "$@"
 
 .PHONY: all install link unlink
 
