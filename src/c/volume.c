@@ -34,8 +34,9 @@ int main() {
     snd_mixer_selem_get_playback_volume(elem, 0, &volume);
 
     // Print the current volume
-    double human_readable_volume = 100 * volume / pow(2, 16);
-    printf("Current Volume: %.lf\n", human_readable_volume);
+	long int range = max - min;
+    double human_readable_volume = 100 * volume / (double)range;
+    printf("Volume: %.ld [%.lf%%]\n", volume, human_readable_volume);
 
     // Set the volume (adjust the value as needed)
     snd_mixer_selem_set_playback_volume_all(elem, volume + 10);
