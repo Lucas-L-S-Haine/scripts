@@ -36,6 +36,10 @@ elif test "$1" = decrease; then
   volume=$(echo $2 | sed 's/\([0-9]\+\)/-\1/')
   set_volume ${volume}
   dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
+elif test "$1" = set; then
+  volume="$2"
+  pulsemixer --set-volume ${volume}
+  dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
 elif test -z "$1"; then
   get_volume
 fi
