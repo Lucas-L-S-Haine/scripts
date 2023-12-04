@@ -1,5 +1,7 @@
 #!/bin/sh
 
+MAX_VOLUME=150
+
 urgency() {
 	volume=$(amixer get Master | awk '/[0-9]+%/ {printf "%s ", $5}' | tr -d '[%]')
 	left_volume=$(echo ${volume} | cut -d ' ' -f 1)
@@ -17,26 +19,40 @@ get_volume() {
 }
 
 set_volume() {
-	if (type pulsemixer > /dev/null 2>&1); then
-		pulsemixer --change-volume $1
-	else
-		local volume="$(echo $1 | sed -E 's/^([+-])([0-9]+)/\2%\1/')"
-		amixer set Master ${volume} unmute > /dev/null 2>&1
+	volume=$1
+	op=$2
+	if ! (pactl set-sink-volume @DEFAULT_SINK@ ${op}${volume}%); then
+		amixer set Master ${volume}%${op} unmute > /dev/null
 	fi
 }
 
-if test "$1" = increase; then
-	volume=$(echo $2 | sed 's/\([0-9]\+\)/+\1/')
-	set_volume ${volume}
-	dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
-elif test "$1" = decrease; then
-	volume=$(echo $2 | sed 's/\([0-9]\+\)/-\1/')
-	set_volume ${volume}
-	dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
-elif test "$1" = set; then
-	volume="$2"
-	pulsemixer --set-volume ${volume}
-	dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
-elif test -z "$1"; then
-	printf '%s\n' "$(get_volume)"
-fi
+limit_volume() {
+	volume_levels=$(get_volume | tr -d [%])
+	for vol in ${volume_levels}; do
+		if test ${vol} -gt ${MAX_VOLUME}; then
+			set_volume ${MAX_VOLUME}
+		fi
+	done
+}
+
+main() {
+	if test "$1" = increase; then
+		volume=$2
+		set_volume ${volume} +
+		limit_volume
+		dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
+	elif test "$1" = decrease; then
+		volume=$2
+		set_volume ${volume} -
+		dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
+	elif test "$1" = set; then
+		volume="$2"
+		set_volume ${volume}
+		limit_volume
+		dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
+	elif test -z "$1"; then
+		printf '%s\n' "$(get_volume)"
+	fi
+}
+
+main $@
