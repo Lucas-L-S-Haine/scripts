@@ -1,8 +1,9 @@
 #!/bin/sh
 
 urgency() {
-  left_volume=$(amixer get Master | grep -oE "[0-9]+%" | head -n 1 | tr -d '%')
-  right_volume=$(amixer get Master | grep -oE "[0-9]+%" | tail -n 1 | tr -d '%')
+  volume=$(amixer get Master | awk '/[0-9]+%/ {printf "%s ", $5}' | tr -d '[%]')
+  left_volume=$(echo ${volume} | cut -d ' ' -f 1)
+  right_volume=$(echo ${volume} | cut -d ' ' -f 2)
 
   if test "${left_volume}" -gt 100 -o "${right_volume}" -gt 100; then
     printf '%s' critical
@@ -12,11 +13,7 @@ urgency() {
 }
 
 get_volume() {
-  if (type pulsemixer > /dev/null 2>&1); then
-    pulsemixer --get-volume
-  else
-    amixer get Master | awk '/[0-9]+%/ {printf "%s ", $5}'
-  fi
+  amixer get Master | awk '/[0-9]+%/ {printf "%s ", $5}'
 }
 
 set_volume() {
@@ -41,5 +38,5 @@ elif test "$1" = set; then
   pulsemixer --set-volume ${volume}
   dunstify volume "$(get_volume)" --replace=1 --timeout=2100 -u "$(urgency)"
 elif test -z "$1"; then
-  get_volume
+  printf '%s\n' "$(get_volume)"
 fi
