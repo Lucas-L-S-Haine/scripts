@@ -14,6 +14,8 @@ TARGET_LIBS := $(patsubst lib/%.c,$(LIB_DIR)/%.o,$(SRC_LIBS))
 EXTRA_FILES := xinitrc
 EXTRA := $(patsubst %,$(BIN_DIR)/%,$(EXTRA_FILES))
 
+CONFIG = CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" -f config.mk
+
 link: $(TARGET_LIBS) $(TARGET_FILES) $(EXTRA)
 
 unlink: | $(BIN_DIR)
@@ -38,7 +40,7 @@ $(BIN_DIR)/xinitrc: $(LIB_DIR)/main.o $(LIB_DIR)/run.o
 # 	$(CC) -o $@ $^ -lm -lasound
 
 notify-me: notify_me.c
-	$(CC) -I/usr/include/gdk-pixbuf-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/glib-2.0 -o $@ $^ -lnotify -lgobject-2.0
+	@$(MAKE) --no-print-directory $(CONFIG) $@
 
 .PHONY: link unlink
 
