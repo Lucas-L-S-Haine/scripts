@@ -21,8 +21,6 @@ int main(int argc, char **argv) {
 	NotifyNotification *notif = notify(argv[1], argv[2], NULL);
 	notify_notification_show(notif, NULL);
 
-	printf("id: %d\n", notif);
-
 	g_object_unref(G_OBJECT(notif));
 	notify_uninit();
 
