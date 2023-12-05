@@ -63,13 +63,16 @@ endef
 
 TARGET_FILES := $(foreach FILE,$(OUT_FILES),$(BIN_DIR)/$(FILE))
 
-link: $(TARGET_FILES)
+link: $(TARGET_FILES) $(BIN_DIR)/volume-alsa $(BIN_DIR)/volume-pulse
 
 unlink: | $(BIN_DIR)
 	rm -f $(TARGET_FILES)
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
+
+$(BIN_DIR)/volume-%: volume_%.sh
+	link $< $@
 
 $(TARGET_FILES): | $(BIN_DIR)
 	ln -s ../src/sh/$(call GET_SRC,$(@F)) $@
