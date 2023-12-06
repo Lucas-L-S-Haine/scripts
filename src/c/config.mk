@@ -1,4 +1,4 @@
-ID != awk -F= -e '/^ID/ { print $$2 }' /etc/os-release
+ID != . /etc/os-release; printf '%s' "$${ID}"
 
 ifeq ($(ID),artix)
 	ifeq ($(filter notify-me,$(MAKECMDGOALS)),notify-me)
