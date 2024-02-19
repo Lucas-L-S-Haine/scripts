@@ -6,4 +6,4 @@ else
 	. ~/.bin/volume-alsa
 fi
 
-main $@
+main "$@"
