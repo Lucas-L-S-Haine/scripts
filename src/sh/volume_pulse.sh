@@ -34,7 +34,7 @@ set_volume() {
 }
 
 print_volume() {
-	printf '[%s] ' $(get_volume)
+	printf '[%3d%%] ' $(get_volume | tr -d %)
 }
 
 limit_volume() {

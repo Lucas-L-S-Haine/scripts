@@ -31,20 +31,24 @@ set_volume() {
 	amixer set Master "${vol}%${op}" unmute > /dev/null 2>&1
 }
 
+print_volume() {
+	printf '[%3d%%] ' $(get_volume | tr -d [%])
+}
+
 main() {
 	if test "$1" = increase; then
 		volume="$2"
 		set_volume "${volume}" +
-		notify-send volume "$(get_volume)" -r 1 -t 2100 -u "$(urgency)"
+		notify-send volume "$(print_volume)" -r 1 -t 2100 -u "$(urgency)"
 	elif test "$1" = decrease; then
 		volume="$2"
 		set_volume "${volume}" -
-		notify-send volume "$(get_volume)" -r 1 -t 2100 -u "$(urgency)"
+		notify-send volume "$(print_volume)" -r 1 -t 2100 -u "$(urgency)"
 	elif test "$1" = set; then
 		volume="$2"
 		set_volume "${volume}"
-		notify-send volume "$(get_volume)" -r 1 -t 2100 -u "$(urgency)"
+		notify-send volume "$(print_volume)" -r 1 -t 2100 -u "$(urgency)"
 	elif test -z "$1"; then
-		printf '%s\n' "$(get_volume)"
+		printf '%s\n' "$(print_volume)"
 	fi
 }
