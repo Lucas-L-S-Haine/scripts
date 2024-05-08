@@ -82,11 +82,18 @@ void print_array(char *array[], char *name, int size) {
 	printf("\"%s\"}\n", array[size - 1]);
 }
 
+void handle_sigchld() {
+	while (waitpid(-1, NULL, WNOHANG) > 0);
+}
+
 int main(int argc, char *argv[]) {
 	char *command;
 	int c;
 	pid_t login_shell_pid;
 	int args_size;
+
+	signal(SIGCHLD, handle_sigchld);
+
 	while ((c = getopt(argc, argv, "hp:")) != -1) {
 		switch (c) {
 			case 'h':
