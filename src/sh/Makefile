@@ -72,7 +72,7 @@ $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 $(BIN_DIR)/volume-%: volume_%.sh
-	link $< $@
+	ln -f $< $@
 
 $(TARGET_FILES): | $(BIN_DIR)
 	ln -s ../src/sh/$(call GET_SRC,$(@F)) $@

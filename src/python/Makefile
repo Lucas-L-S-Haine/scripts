@@ -84,11 +84,9 @@ $(BIN_DIR):
 	mkdir -p $@
 
 $(VENV): requirements.txt
-	if test ! -d "$@"; then \
-		$(PYTHON) -m venv "$@"; \
-		$(PIP) install --upgrade pip; \
-		$(PIP) install --upgrade -r $<; \
-	fi
+	if test ! -d "$@"; then $(PYTHON) -m venv "$@"; fi
+	$(PIP) install --upgrade pip
+	$(PIP) install --upgrade -r $<
 	touch "$@"
 
 $(TARGET_FILES): | $(BIN_DIR) $(VENV)
